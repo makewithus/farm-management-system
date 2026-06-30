@@ -78,8 +78,8 @@ export function OverviewAnalytics({ categories = [], mortalities = [], vaccinati
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm col-span-1">
-        <h3 className="text-[14px] font-bold text-gray-500 mb-4">Animal Distribution</h3>
+      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm col-span-1 hover:border-gray-200 transition-colors">
+        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Animal Distribution</h3>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             {distributionData.length > 0 ? (
@@ -104,18 +104,18 @@ export function OverviewAnalytics({ categories = [], mortalities = [], vaccinati
             )}
           </ResponsiveContainer>
         </div>
-        <div className="flex flex-wrap gap-2 justify-center mt-2">
+        <div className="flex flex-wrap gap-3 justify-center mt-2">
           {distributionData.map((d, i) => (
-            <div key={d.name} className="flex items-center gap-1 text-[12px] text-gray-600">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+            <div key={d.name} className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
+              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
               {d.name} ({d.value})
             </div>
           ))}
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm col-span-1">
-        <h3 className="text-[14px] font-bold text-gray-500 mb-4">Mortality Trend (7 Days)</h3>
+      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm col-span-1 hover:border-gray-200 transition-colors">
+        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Mortality Trend (7 Days)</h3>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={mortalityData}>
@@ -129,8 +129,8 @@ export function OverviewAnalytics({ categories = [], mortalities = [], vaccinati
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm col-span-1">
-        <h3 className="text-[14px] font-bold text-gray-500 mb-4">Vaccinations (Next 7 Days)</h3>
+      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm col-span-1 hover:border-gray-200 transition-colors">
+        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Vaccinations (Next 7 Days)</h3>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={vaccinationData}>

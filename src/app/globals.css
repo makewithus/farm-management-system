@@ -8,29 +8,30 @@
   --color-brand-sidebar-hover: #0E3A30;
   --color-brand-sidebar-active: #124537;
   
-  --color-page-bg: #F5F7FB;
+  --color-page-bg: #F9FAFB; /* Tailwind gray-50 */
   --color-card-bg: #FFFFFF;
   
-  --color-text-heading: #111827;
-  --color-text-body: #374151;
-  --color-text-secondary: #6B7280;
+  --color-text-heading: #111827; /* Tailwind gray-900 */
+  --color-text-body: #374151; /* Tailwind gray-700 */
+  --color-text-secondary: #6B7280; /* Tailwind gray-500 */
   --color-text-disabled: #9CA3AF;
   
-  --color-status-success: #22C55E;
+  --color-status-success: #10B981; /* Tailwind emerald-500 */
   --color-status-warning: #F59E0B;
-  --color-status-danger: #EF4444;
+  --color-status-danger: #EF4444; /* Tailwind red-500 */
   --color-status-info: #3B82F6;
   --color-status-pending: #8B5CF6;
   
-  --color-border-main: #E5E7EB;
-  --color-border-divider: #F1F5F9;
+  --color-border-main: #E5E7EB; /* Tailwind gray-200 */
+  --color-border-divider: #F3F4F6; /* Tailwind gray-100 */
 
   --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
   
-  --radius-card: 16px;
-  --radius-btn: 12px;
-  --radius-input: 12px;
-  --radius-modal: 20px;
+  /* Standardized Premium Enterprise Radii */
+  --radius-card: 12px; /* rounded-xl */
+  --radius-btn: 8px;   /* rounded-lg */
+  --radius-input: 8px; /* rounded-lg */
+  --radius-modal: 16px; /* rounded-2xl */
 }
 
 body {
@@ -42,7 +43,7 @@ body {
 
 @layer utilities {
   .shadow-soft {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* Tailwind shadow-sm equivalent */
   }
   
   /* Global Premium Scrollbar */

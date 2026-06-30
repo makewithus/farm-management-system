@@ -216,33 +216,33 @@ export default async function DashboardPage() {
       )}
 
       {/* Dashboard Top Header (Weather) */}
-      <div className="flex items-center justify-between bg-card-bg p-4 rounded-[16px] border border-border-main shadow-soft mb-6">
+      <div className="flex items-center justify-between bg-white p-5 rounded-xl border border-gray-200 shadow-sm mb-6">
         <div>
-          <h1 className="text-xl font-bold text-text-heading">Farm Overview</h1>
-          <p className="text-sm text-text-secondary mt-1">Live metrics and operational data</p>
+          <h1 className="text-xl font-bold text-gray-900 tracking-tight">Farm Overview</h1>
+          <p className="text-sm text-gray-500 mt-1">Live metrics and operational data</p>
         </div>
-        <div className="flex items-center gap-4 bg-page-bg py-2 px-4 rounded-xl border border-border-divider">
-          <weatherMetric.icon className={`w-6 h-6 ${weatherMetric.color}`} />
+        <div className="flex items-center gap-4 bg-gray-50 py-2.5 px-5 rounded-lg border border-gray-200">
+          <weatherMetric.icon className={`w-5 h-5 ${weatherMetric.color}`} />
           <div>
-            <p className="text-[14px] font-bold text-text-heading leading-tight">{weatherMetric.value}</p>
-            <p className="text-[11px] text-text-secondary">{weatherMetric.sub}</p>
+            <p className="text-sm font-bold text-gray-900 leading-tight">{weatherMetric.value}</p>
+            <p className="text-xs text-gray-500">{weatherMetric.sub}</p>
           </div>
         </div>
       </div>
 
       {/* Financials */}
       <div className="mb-8">
-        <h2 className="text-[13px] font-bold text-text-secondary uppercase tracking-wider mb-3 px-1">Financial Performance</h2>
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-1">Financial Performance</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {financialMetrics.map((kpi, idx) => (
-            <div key={`fin-${idx}`} className="bg-card-bg p-5 rounded-[16px] border border-border-main shadow-soft hover:shadow-md transition-shadow flex items-center justify-between group">
+            <div key={`fin-${idx}`} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group">
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-[12px] ${kpi.bg} group-hover:scale-110 transition-transform`}>
+                <div className={`p-3 rounded-lg ${kpi.bg} group-hover:scale-110 transition-transform`}>
                   <kpi.icon className={`w-5 h-5 ${kpi.color}`} />
                 </div>
                 <div>
-                  <p className="text-[13px] text-text-secondary font-medium mb-1">{kpi.label}</p>
-                  <p className="text-[20px] font-bold text-text-heading leading-none">{kpi.value}</p>
+                  <p className="text-sm text-gray-500 font-medium mb-1">{kpi.label}</p>
+                  <p className="text-xl font-bold text-gray-900 leading-none">{kpi.value}</p>
                 </div>
               </div>
             </div>
@@ -252,19 +252,19 @@ export default async function DashboardPage() {
 
       {/* Operations */}
       <div className="mb-8">
-        <h2 className="text-[13px] font-bold text-text-secondary uppercase tracking-wider mb-3 px-1">Operations & Livestock</h2>
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-1">Operations & Livestock</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {operationalMetrics.map((kpi, idx) => (
-            <div key={`ops-${idx}`} className="bg-card-bg p-5 rounded-[16px] border border-border-main shadow-soft hover:shadow-md transition-shadow flex items-center justify-between group">
+            <div key={`ops-${idx}`} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group">
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-[12px] ${kpi.bg} group-hover:scale-110 transition-transform`}>
+                <div className={`p-3 rounded-lg ${kpi.bg} group-hover:scale-110 transition-transform`}>
                   <kpi.icon className={`w-5 h-5 ${kpi.color}`} />
                 </div>
                 <div>
-                  <p className="text-[13px] text-text-secondary font-medium mb-1">{kpi.label}</p>
+                  <p className="text-sm text-gray-500 font-medium mb-1">{kpi.label}</p>
                   <div className="flex items-baseline gap-2">
-                    <p className="text-[20px] font-bold text-text-heading leading-none">{kpi.value}</p>
-                    {kpi.trend && <span className={`text-[12px] font-bold ${kpi.trend.startsWith('+') ? 'text-status-success' : kpi.trend.startsWith('-') ? 'text-status-danger' : 'text-gray-400'}`}>{kpi.trend}</span>}
+                    <p className="text-xl font-bold text-gray-900 leading-none">{kpi.value}</p>
+                    {kpi.trend && <span className={`text-xs font-bold ${kpi.trend.startsWith('+') ? 'text-emerald-600' : kpi.trend.startsWith('-') ? 'text-red-600' : 'text-gray-400'}`}>{kpi.trend}</span>}
                   </div>
                 </div>
               </div>
@@ -275,19 +275,19 @@ export default async function DashboardPage() {
 
       {/* Resources */}
       <div className="mb-8">
-        <h2 className="text-[13px] font-bold text-text-secondary uppercase tracking-wider mb-3 px-1">Resources & Consumption</h2>
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-1">Resources & Consumption</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {resourceMetrics.map((kpi, idx) => (
-            <div key={`res-${idx}`} className="bg-card-bg p-5 rounded-[16px] border border-border-main shadow-soft hover:shadow-md transition-shadow flex items-center justify-between group">
+            <div key={`res-${idx}`} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group">
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-[12px] ${kpi.bg} group-hover:scale-110 transition-transform`}>
+                <div className={`p-3 rounded-lg ${kpi.bg} group-hover:scale-110 transition-transform`}>
                   <kpi.icon className={`w-5 h-5 ${kpi.color}`} />
                 </div>
                 <div>
-                  <p className="text-[13px] text-text-secondary font-medium mb-1">{kpi.label}</p>
+                  <p className="text-sm text-gray-500 font-medium mb-1">{kpi.label}</p>
                   <div className="flex items-baseline gap-2">
-                    <p className="text-[20px] font-bold text-text-heading leading-none">{kpi.value}</p>
-                    {kpi.trend && <span className={`text-[12px] font-bold ${kpi.trend.startsWith('+') ? 'text-status-success' : kpi.trend.startsWith('-') ? 'text-status-danger' : 'text-gray-400'}`}>{kpi.trend}</span>}
+                    <p className="text-xl font-bold text-gray-900 leading-none">{kpi.value}</p>
+                    {kpi.trend && <span className={`text-xs font-bold ${kpi.trend.startsWith('+') ? 'text-emerald-600' : kpi.trend.startsWith('-') ? 'text-red-600' : 'text-gray-400'}`}>{kpi.trend}</span>}
                   </div>
                 </div>
               </div>
@@ -298,18 +298,18 @@ export default async function DashboardPage() {
 
       {/* Processing & Inventory */}
       <div className="mb-8">
-        <h2 className="text-[13px] font-bold text-text-secondary uppercase tracking-wider mb-3 px-1">Processing & Inventory</h2>
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-1">Processing & Inventory</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {processingMetrics.map((kpi, idx) => (
-            <div key={`proc-${idx}`} className="bg-card-bg p-5 rounded-[16px] border border-border-main shadow-soft hover:shadow-md transition-shadow flex items-center justify-between group">
+            <div key={`proc-${idx}`} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group">
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-[12px] ${kpi.bg} group-hover:scale-110 transition-transform`}>
+                <div className={`p-3 rounded-lg ${kpi.bg} group-hover:scale-110 transition-transform`}>
                   <kpi.icon className={`w-5 h-5 ${kpi.color}`} />
                 </div>
                 <div>
-                  <p className="text-[13px] text-text-secondary font-medium mb-1">{kpi.label}</p>
+                  <p className="text-sm text-gray-500 font-medium mb-1">{kpi.label}</p>
                   <div className="flex items-baseline gap-2">
-                    <p className="text-[20px] font-bold text-text-heading leading-none">{kpi.value}</p>
+                    <p className="text-xl font-bold text-gray-900 leading-none">{kpi.value}</p>
                   </div>
                 </div>
               </div>
@@ -321,41 +321,41 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Left Column: Animals */}
         <div className="xl:col-span-2 space-y-6">
-          <div className="bg-card-bg rounded-[var(--radius-card)] border border-border-main shadow-soft p-5">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-[16px] font-bold text-text-heading flex items-center gap-2">
-                <Users className="w-4 h-4 text-brand-primary" /> Animals Inventory
+              <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                <Users className="w-5 h-5 text-brand-primary" /> Animals Inventory
               </h2>
               <div className="flex items-center gap-2">
-                <button className="text-[12px] text-text-secondary hover:text-brand-primary bg-page-bg px-3 py-1.5 rounded-md transition-colors">
+                <button className="text-xs font-medium text-gray-600 hover:text-brand-primary bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg transition-colors">
                   Filter
                 </button>
               </div>
             </div>
             
             {categories.length === 0 ? (
-              <div className="text-center py-10 text-text-secondary">No categories created yet.</div>
+              <div className="text-center py-10 text-gray-500">No categories created yet.</div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {categories.map((cat) => {
                   const total = cat.animal_batches.reduce((sum: number, b: any) => sum + b.quantity, 0);
                   return (
-                    <div key={cat.id} className="border border-border-divider rounded-[12px] p-4 hover:border-brand-primary/30 transition-colors">
+                    <div key={cat.id} className="border border-gray-200 rounded-xl p-5 hover:border-brand-primary/30 transition-colors bg-white">
                       <div className="flex justify-between items-start mb-4">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-page-bg flex items-center justify-center text-[16px]">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-lg">
                             🐾
                           </div>
-                          <span className="font-semibold text-text-heading">{cat.name}</span>
+                          <span className="font-semibold text-gray-900">{cat.name}</span>
                         </div>
-                        <span className="text-xl font-bold text-text-heading">{total.toLocaleString()}</span>
+                        <span className="text-xl font-bold text-gray-900">{total.toLocaleString()}</span>
                       </div>
-                      <div className="flex items-center gap-3 text-[11px] text-text-secondary">
-                        <span className="flex items-center gap-1">
+                      <div className="flex items-center gap-4 text-xs font-medium text-gray-500">
+                        <span className="flex items-center gap-1.5">
                           <div className="w-2 h-2 rounded-full bg-brand-primary"></div> {cat.animal_batches.length} Batches
                         </span>
-                        <span className="flex items-center gap-1">
-                          <div className="w-2 h-2 rounded-full bg-status-danger"></div> {cat.mortality_percentage}% Max Mort.
+                        <span className="flex items-center gap-1.5">
+                          <div className="w-2 h-2 rounded-full bg-red-500"></div> {cat.mortality_percentage}% Max Mort.
                         </span>
                       </div>
                     </div>
@@ -366,10 +366,10 @@ export default async function DashboardPage() {
           </div>
           
           {/* Analytics Widgets */}
-          <div className="bg-card-bg rounded-[var(--radius-card)] border border-border-main shadow-soft p-5">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-[16px] font-bold text-text-heading">Overview Analytics</h2>
-              <button className="text-[12px] font-medium text-text-secondary hover:text-brand-primary bg-page-bg border border-border-divider px-3 py-1.5 rounded-md transition-colors">
+              <h2 className="text-base font-bold text-gray-900">Overview Analytics</h2>
+              <button className="text-xs font-medium text-gray-600 hover:text-brand-primary bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg transition-colors">
                 Show More
               </button>
             </div>
@@ -383,76 +383,76 @@ export default async function DashboardPage() {
 
         {/* Right Column: Live Report & Activity Feed */}
         <div className="xl:col-span-1 space-y-6">
-          <div className="bg-card-bg rounded-[var(--radius-card)] border border-border-main shadow-soft p-5 h-full">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 h-full">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-[16px] font-bold text-text-heading flex items-center gap-2">
-                <Activity className="w-4 h-4 text-brand-primary" /> Live Report
+              <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                <Activity className="w-5 h-5 text-brand-primary" /> Live Report
               </h2>
             </div>
             
-            <div className="bg-brand-primary rounded-[12px] p-5 text-white mb-6">
-              <p className="text-white/80 text-[13px] font-medium mb-1">Total System Capacity</p>
-              <div className="flex items-end gap-3 mb-4">
-                <h3 className="text-3xl font-bold">{totalAnimals.toLocaleString()}</h3>
-                <span className="text-[12px] bg-white/20 px-2 py-0.5 rounded-full mb-1">Active</span>
+            <div className="bg-brand-primary rounded-xl p-6 text-white mb-6 shadow-sm">
+              <p className="text-white/90 text-sm font-medium mb-2">Total System Capacity</p>
+              <div className="flex items-end gap-3 mb-5">
+                <h3 className="text-4xl font-bold tracking-tight">{totalAnimals.toLocaleString()}</h3>
+                <span className="text-xs font-medium bg-white/20 px-2.5 py-1 rounded-full mb-1">Active</span>
               </div>
-              <div className="flex items-center justify-between text-[12px] border-t border-white/20 pt-3">
+              <div className="flex items-center justify-between text-sm border-t border-white/20 pt-4 font-medium">
                 <span>Mortality Rate</span>
-                <span className="font-bold">{totalAnimals > 0 ? ((totalMortality / totalAnimals) * 100).toFixed(1) : '0.0'}%</span>
+                <span>{totalAnimals > 0 ? ((totalMortality / totalAnimals) * 100).toFixed(1) : '0.0'}%</span>
               </div>
             </div>
 
             <div className="space-y-4 mb-8">
-              <h4 className="text-[13px] font-bold text-text-heading uppercase tracking-wide border-b border-border-divider pb-2">Upcoming Tasks</h4>
+              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2">Upcoming Tasks</h4>
               
-              <div className="flex items-center justify-between p-3 rounded-lg border border-border-divider bg-page-bg">
+              <div className="flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-gray-50">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full bg-status-danger/10 text-status-danger">
-                    <ShieldPlus className="w-4 h-4" />
+                  <div className="p-2 rounded-lg bg-red-100 text-red-600">
+                    <ShieldPlus className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-text-heading">Overdue Vaccinations</p>
-                    <p className="text-[11px] text-text-secondary">Requires immediate action</p>
+                    <p className="text-sm font-bold text-gray-900">Overdue Vaccinations</p>
+                    <p className="text-xs text-gray-500 mt-0.5">Requires immediate action</p>
                   </div>
                 </div>
-                <span className="font-bold text-status-danger">{overdueVaccinationsCount}</span>
+                <span className="font-bold text-red-600">{overdueVaccinationsCount}</span>
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-lg border border-border-divider bg-page-bg">
+              <div className="flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-gray-50">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full bg-status-warning/10 text-status-warning">
-                    <ShieldPlus className="w-4 h-4" />
+                  <div className="p-2 rounded-lg bg-amber-100 text-amber-600">
+                    <ShieldPlus className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-text-heading">Pending Vaccinations</p>
-                    <p className="text-[11px] text-text-secondary">Upcoming schedule</p>
+                    <p className="text-sm font-bold text-gray-900">Pending Vaccinations</p>
+                    <p className="text-xs text-gray-500 mt-0.5">Upcoming schedule</p>
                   </div>
                 </div>
-                <span className="font-bold text-text-heading">{upcomingVaccinationsCount}</span>
+                <span className="font-bold text-gray-900">{upcomingVaccinationsCount}</span>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-[13px] font-bold text-text-heading uppercase tracking-wide border-b border-border-divider pb-2">Recent Activity</h4>
+              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2">Recent Activity</h4>
               
               <div className="space-y-3">
                 {auditLogs.length === 0 ? (
-                  <div className="text-[12px] text-text-secondary text-center py-4">No recent activity</div>
+                  <div className="text-sm text-gray-500 text-center py-6">No recent activity</div>
                 ) : (
                   auditLogs.map((log) => (
-                    <div key={log.id} className="flex items-start gap-3 p-3 rounded-lg border border-border-divider bg-page-bg transition-colors hover:border-brand-primary/20">
-                      <div className={`p-2 rounded-full shrink-0 ${
-                        log.action === 'CREATE' ? 'bg-status-success/10 text-status-success' :
-                        log.action === 'UPDATE' ? 'bg-blue-500/10 text-blue-500' :
-                        'bg-status-danger/10 text-status-danger'
+                    <div key={log.id} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 bg-white hover:border-gray-200 transition-colors">
+                      <div className={`p-2 rounded-lg shrink-0 ${
+                        log.action === 'CREATE' ? 'bg-emerald-100 text-emerald-600' :
+                        log.action === 'UPDATE' ? 'bg-blue-100 text-blue-600' :
+                        'bg-red-100 text-red-600'
                       }`}>
-                        <Activity className="w-3.5 h-3.5" />
+                        <Activity className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-[13px] font-medium text-text-heading leading-tight">
+                        <p className="text-sm font-semibold text-gray-900 leading-tight">
                           {log.user?.name || "User"} {log.action.toLowerCase()}d {log.entity}
                         </p>
-                        <p className="text-[11px] text-text-secondary mt-1">
+                        <p className="text-xs text-gray-500 mt-1 font-medium">
                           {new Date(log.timestamp).toLocaleString()}
                         </p>
                       </div>

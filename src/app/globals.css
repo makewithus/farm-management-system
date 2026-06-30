@@ -1,17 +1,14 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-brand-primary: #059669; /* Emerald 600 - Richer, less dull */
-  --color-brand-hover: #047857;
-  --color-brand-dark: #064E3B;
-  --color-brand-sidebar: #022C22;
-  --color-brand-sidebar-hover: #064E3B;
-  --color-brand-sidebar-active: #047857;
+  --color-brand-primary: #00C291;
+  --color-brand-hover: #00A97D;
+  --color-brand-dark: #065F46;
+  --color-brand-sidebar: #06241D;
+  --color-brand-sidebar-hover: #0E3A30;
+  --color-brand-sidebar-active: #124537;
   
-  --color-brand-accent: #D97706; /* Richer Amber */
-  --color-brand-accent-hover: #B45309;
-  
-  --color-page-bg: #F8F9FA; /* Slightly cleaner off-white */
+  --color-page-bg: #F5F7FB;
   --color-card-bg: #FFFFFF;
   
   --color-text-heading: #111827;
@@ -26,14 +23,14 @@
   --color-status-pending: #8B5CF6;
   
   --color-border-main: #E5E7EB;
-  --color-border-divider: #F3F4F6;
+  --color-border-divider: #F1F5F9;
 
   --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
   
-  --radius-card: 12px;
-  --radius-btn: 8px;
-  --radius-input: 8px;
-  --radius-modal: 16px;
+  --radius-card: 16px;
+  --radius-btn: 12px;
+  --radius-input: 12px;
+  --radius-modal: 20px;
 }
 
 body {

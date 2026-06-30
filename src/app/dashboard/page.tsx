@@ -173,7 +173,21 @@ export default async function DashboardPage() {
   }, 0);
   const todayMortalityRate = totalAnimals > 0 ? ((todayMortality / totalAnimals) * 100).toFixed(1) : "0.0";
 
-  const weatherMetric = { label: "Weather", value: "27°C", sub: "Wed, 24-06-39", icon: Sun, color: "text-amber-500", bg: "bg-amber-50" };
+  let weatherTemp = 27;
+  try {
+    const weatherRes = await fetch("https://api.open-meteo.com/v1/forecast?latitude=28.6139&longitude=77.2090&current_weather=true", { next: { revalidate: 3600 } });
+    if (weatherRes.ok) {
+      const weatherData = await weatherRes.json();
+      if (weatherData?.current_weather) {
+        weatherTemp = Math.round(weatherData.current_weather.temperature);
+      }
+    }
+  } catch (e) {
+    // Silently fallback if offline
+  }
+
+  const currentDateStr = new Date().toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+  const weatherMetric = { label: "Weather", value: `${weatherTemp}°C`, sub: currentDateStr, icon: Sun, color: "text-amber-500", bg: "bg-amber-50" };
 
   const financialMetrics = [
     { label: "Total Revenue", value: `₹${allTimeRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}`, sub: `Today: ₹${todayRevenue.toLocaleString()}`, icon: IndianRupee, color: "text-emerald-600", bg: "bg-emerald-50" },

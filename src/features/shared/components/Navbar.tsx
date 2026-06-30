@@ -23,10 +23,9 @@ export function Navbar({ toggleSidebar }: { toggleSidebar?: () => void }) {
             <MapPin className="w-5 h-5 text-brand-primary"/>
           </div>
           <div className="flex flex-col">
-            <span className="text-[11px] text-text-secondary uppercase font-semibold tracking-wide">Farm</span>
-            <div className="flex items-center gap-1 cursor-pointer group">
-              <span className="text-[14px] font-bold text-text-heading group-hover:text-brand-primary transition-colors">{farmName}</span>
-              <ChevronDown className="w-4 h-4 text-gray-500 group-hover:text-brand-primary transition-colors" />
+            <span className="text-xs text-gray-500 uppercase font-semibold tracking-wide">Farm</span>
+            <div className="flex items-center gap-1">
+              <span className="text-sm font-bold text-gray-900">{farmName}</span>
             </div>
           </div>
         </div>
@@ -34,25 +33,18 @@ export function Navbar({ toggleSidebar }: { toggleSidebar?: () => void }) {
       
       <div className="flex items-center gap-3 md:gap-5">
         <InstallPWA />
-        <div className="hidden md:flex relative group mr-2">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-brand-primary transition-colors" />
-          <input 
-            type="text" 
-            placeholder="Search..." 
-            className="pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all w-[200px] xl:w-[300px]"
-          />
-        </div>
+
 
         <NotificationBell />
         
         <div className="flex items-center gap-3 pl-2 md:pl-5 md:border-l border-gray-200 ml-1">
           {/* Dynamic avatar using user's initial */}
-          <div className="w-9 h-9 rounded-full bg-brand-primary flex items-center justify-center text-white font-bold text-[14px] shrink-0">
+          <div className="w-9 h-9 rounded-full bg-brand-primary flex items-center justify-center text-white font-bold text-sm shrink-0">
             {userInitial}
           </div>
-          <div className="hidden lg:flex flex-col cursor-pointer">
-            <span className="text-[14px] font-bold text-text-heading leading-tight">{userName}</span>
-            <span className="text-[12px] text-text-secondary">{userRole}</span>
+          <div className="hidden lg:flex flex-col">
+            <span className="text-sm font-bold text-gray-900 leading-tight">{userName}</span>
+            <span className="text-xs text-gray-500">{userRole}</span>
           </div>
           <button
             onClick={() => signOut({ callbackUrl: '/login' })}

@@ -1,14 +1,17 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-brand-primary: #00C291;
-  --color-brand-hover: #00A97D;
-  --color-brand-dark: #065F46;
-  --color-brand-sidebar: #06241D;
-  --color-brand-sidebar-hover: #0E3A30;
-  --color-brand-sidebar-active: #124537;
+  --color-brand-primary: #2D5A43;
+  --color-brand-hover: #1E3F2E;
+  --color-brand-dark: #142B20;
+  --color-brand-sidebar: #1A2E22;
+  --color-brand-sidebar-hover: #264231;
+  --color-brand-sidebar-active: #315740;
   
-  --color-page-bg: #F5F7FB;
+  --color-brand-accent: #B7791F;
+  --color-brand-accent-hover: #975F14;
+  
+  --color-page-bg: #F7F6F3;
   --color-card-bg: #FFFFFF;
   
   --color-text-heading: #111827;
@@ -23,14 +26,14 @@
   --color-status-pending: #8B5CF6;
   
   --color-border-main: #E5E7EB;
-  --color-border-divider: #F1F5F9;
+  --color-border-divider: #F3F4F6;
 
   --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
   
-  --radius-card: 16px;
-  --radius-btn: 12px;
-  --radius-input: 12px;
-  --radius-modal: 20px;
+  --radius-card: 12px;
+  --radius-btn: 8px;
+  --radius-input: 8px;
+  --radius-modal: 16px;
 }
 
 body {

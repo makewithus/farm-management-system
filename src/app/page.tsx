@@ -9,35 +9,35 @@ export default async function LandingPage() {
   return (
     <div className="min-h-screen bg-page-bg text-gray-900 font-sans selection:bg-brand-primary/10 selection:text-brand-primary">
       {/* Navigation */}
-      <nav className="fixed top-0 inset-x-0 z-50 bg-page-bg/90 backdrop-blur-md border-b border-gray-200/60">
+      <nav className="fixed top-0 inset-x-0 z-50 bg-page-bg/80 backdrop-blur-xl border-b border-gray-200/50 transition-all duration-300">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="bg-brand-primary p-1.5 rounded-md">
+          <div className="flex items-center gap-2.5 group cursor-pointer">
+            <div className="bg-brand-primary p-1.5 rounded-lg shadow-sm group-hover:shadow-brand-primary/30 group-hover:shadow-md transition-all duration-300">
               <Tractor className="w-5 h-5 text-white stroke-[2]" />
             </div>
-            <span className="text-lg font-semibold tracking-tight text-gray-900">Farm ERP</span>
+            <span className="text-lg font-bold tracking-tight text-gray-900 group-hover:text-brand-primary transition-colors duration-300">Farm ERP</span>
           </div>
           <div className="hidden md:flex items-center gap-8 font-medium text-sm text-gray-500">
-            <a href="#features" className="hover:text-gray-900 transition-colors">Platform</a>
-            <a href="#customers" className="hover:text-gray-900 transition-colors">Customers</a>
-            <a href="#app" className="hover:text-gray-900 transition-colors">Mobile App</a>
+            <a href="#features" className="hover:text-brand-primary transition-colors duration-200">Platform</a>
+            <a href="#customers" className="hover:text-brand-primary transition-colors duration-200">Customers</a>
+            <a href="#app" className="hover:text-brand-primary transition-colors duration-200">Mobile App</a>
           </div>
           <div className="flex items-center gap-4">
             {session ? (
               <Link 
                 href="/dashboard" 
-                className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-btn text-sm font-medium transition-colors"
+                className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-btn text-sm font-semibold transition-all hover:shadow-lg hover:shadow-gray-900/20 active:scale-95"
               >
                 Dashboard <ArrowRight className="w-4 h-4" />
               </Link>
             ) : (
               <>
-                <Link href="/login" className="hidden sm:block text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors">
+                <Link href="/login" className="hidden sm:block text-gray-500 hover:text-gray-900 text-sm font-semibold transition-colors duration-200">
                   Sign in
                 </Link>
                 <Link 
                   href="/signup" 
-                  className="bg-brand-primary hover:bg-brand-hover text-white px-4 py-2 rounded-btn text-sm font-medium transition-colors"
+                  className="bg-brand-primary hover:bg-brand-hover text-white px-5 py-2.5 rounded-btn text-sm font-semibold transition-all duration-300 hover:shadow-[0_0_20px_rgba(5,150,105,0.4)] hover:-translate-y-0.5 active:scale-95"
                 >
                   Get Started
                 </Link>
@@ -48,19 +48,26 @@ export default async function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 lg:pt-48 lg:pb-32 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-gray-200 shadow-sm text-gray-600 font-medium text-xs mb-8">
-            <span className="w-2 h-2 rounded-full bg-brand-accent"></span>
-            Farm ERP 2.0 is now available <ChevronRight className="w-3 h-3 text-gray-400" />
+      <section className="pt-32 pb-20 lg:pt-48 lg:pb-32 px-4 relative overflow-hidden">
+        {/* Subtle glowing orbs for a premium SaaS feel without being completely AI-generated */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-brand-primary/10 blur-[120px] rounded-[100%] pointer-events-none -z-10 mix-blend-multiply"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/4 -translate-y-1/4 w-[600px] h-[600px] bg-brand-accent/5 blur-[120px] rounded-[100%] pointer-events-none -z-10 mix-blend-multiply"></div>
+
+        <div className="max-w-6xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/80 shadow-[0_2px_10px_rgba(0,0,0,0.02)] text-gray-600 font-semibold text-xs mb-8 hover:border-brand-primary/30 transition-colors duration-300 cursor-default group">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent"></span>
+            </span>
+            Farm ERP 2.0 is now available <ChevronRight className="w-3 h-3 text-gray-400 group-hover:text-brand-primary transition-colors" />
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 mb-6 leading-[1.1]">
             The operating system for <br className="hidden md:block" />
-            commercial agriculture.
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-emerald-500">commercial agriculture.</span>
           </h1>
           
-          <p className="mt-6 max-w-2xl text-lg text-gray-500 mx-auto mb-10 leading-relaxed">
+          <p className="mt-6 max-w-2xl text-lg text-gray-500 mx-auto mb-10 leading-relaxed font-medium">
             Unify your livestock, feed, and financial management in one beautifully designed, offline-ready platform. Built for modern farm operations.
           </p>
           
@@ -68,34 +75,34 @@ export default async function LandingPage() {
             {!session ? (
               <Link 
                 href="/signup" 
-                className="w-full sm:w-auto flex justify-center items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-btn text-base font-medium transition-colors"
+                className="w-full sm:w-auto flex justify-center items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 rounded-btn text-base font-semibold transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/20 hover:-translate-y-1 active:scale-95"
               >
                 Start Free Trial
               </Link>
             ) : (
               <Link 
                 href="/dashboard" 
-                className="w-full sm:w-auto flex justify-center items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-btn text-base font-medium transition-colors"
+                className="w-full sm:w-auto flex justify-center items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 rounded-btn text-base font-semibold transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/20 hover:-translate-y-1 active:scale-95"
               >
                 Go to Dashboard
               </Link>
             )}
-            <a href="#features" className="w-full sm:w-auto flex justify-center items-center gap-2 bg-white hover:bg-gray-50 text-gray-900 border border-gray-200 px-6 py-3 rounded-btn text-base font-medium transition-colors shadow-sm">
+            <a href="#features" className="w-full sm:w-auto flex justify-center items-center gap-2 bg-white hover:bg-gray-50 text-gray-900 border border-gray-200 px-8 py-4 rounded-btn text-base font-semibold transition-all duration-300 shadow-sm hover:shadow-md hover:border-gray-300">
               Explore Platform
             </a>
           </div>
 
-          {/* Clean Mockup */}
-          <div className="mt-24 max-w-5xl mx-auto">
-            <div className="rounded-card border border-gray-200/80 bg-white p-2 shadow-soft">
-              <div className="rounded-lg overflow-hidden border border-gray-100 bg-gray-50 aspect-[16/9] relative">
-                {/* Fallback pattern if image is missing, otherwise Image will load */}
+          {/* Clean Mockup with Premium Hover Effect */}
+          <div className="mt-24 max-w-5xl mx-auto group perspective-1000">
+            <div className="rounded-card border border-white/40 bg-white/40 backdrop-blur-xl p-2 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] transition-all duration-500 hover:shadow-[0_30px_60px_-12px_rgba(5,150,105,0.15)] hover:-translate-y-2">
+              <div className="rounded-lg overflow-hidden border border-gray-200/50 bg-gray-50 aspect-[16/9] relative">
+                {/* Fallback pattern */}
                 <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-50" />
                 <Image 
                   src="/hero-mockup-2.png" 
                   alt="Farm ERP Dashboard" 
                   fill
-                  className="object-cover relative z-10"
+                  className="object-cover relative z-10 transition-transform duration-700 group-hover:scale-[1.01]"
                   priority
                 />
               </div>

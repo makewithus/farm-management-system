@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-brand-primary: #2D5A43;
-  --color-brand-hover: #1E3F2E;
-  --color-brand-dark: #142B20;
-  --color-brand-sidebar: #1A2E22;
-  --color-brand-sidebar-hover: #264231;
-  --color-brand-sidebar-active: #315740;
+  --color-brand-primary: #059669; /* Emerald 600 - Richer, less dull */
+  --color-brand-hover: #047857;
+  --color-brand-dark: #064E3B;
+  --color-brand-sidebar: #022C22;
+  --color-brand-sidebar-hover: #064E3B;
+  --color-brand-sidebar-active: #047857;
   
-  --color-brand-accent: #B7791F;
-  --color-brand-accent-hover: #975F14;
+  --color-brand-accent: #D97706; /* Richer Amber */
+  --color-brand-accent-hover: #B45309;
   
-  --color-page-bg: #F7F6F3;
+  --color-page-bg: #F8F9FA; /* Slightly cleaner off-white */
   --color-card-bg: #FFFFFF;
   
   --color-text-heading: #111827;

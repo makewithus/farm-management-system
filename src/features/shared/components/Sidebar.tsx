@@ -141,14 +141,7 @@ export function Sidebar({ isCollapsed = false, userRole = "Worker" }: { isCollap
         })}
       </nav>
       
-      <div className={`shrink-0 p-4 border-t border-[#0a3128] ${isCollapsed ? 'flex justify-center' : ''}`}>
-        <button 
-          title={isCollapsed ? "Farm Action" : undefined}
-          className={`flex items-center justify-center gap-2 bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-hover)] text-white py-2.5 rounded-lg transition-colors text-[15px] font-medium ${isCollapsed ? 'w-10 h-10 p-0 rounded-full' : 'w-full'}`}
-        >
-          {isCollapsed ? <Plus className="w-5 h-5" /> : <><span className="text-lg leading-none">+</span> Farm Action</>}
-        </button>
-      </div>
+
     </aside>
   );
 }

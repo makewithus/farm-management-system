@@ -92,6 +92,7 @@ export default async function LandingPage() {
                   src="/hero-mockup-2.png" 
                   alt="Farm ERP Dashboard" 
                   fill
+                  sizes="(max-width: 768px) 100vw, 1024px"
                   className="object-cover"
                   priority
                 />

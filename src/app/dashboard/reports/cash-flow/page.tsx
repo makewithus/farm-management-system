@@ -79,29 +79,71 @@ export default function CashFlowReportPage() {
       ) : data?.error ? (
         <div className="text-red-500">{data.error}</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader><CardTitle>Cash Position</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between font-bold"><span>Opening Cash</span><span>₹{(data.metrics?.openingCash || 0).toFixed(2)}</span></div>
-              <div className="flex justify-between text-green-600"><span>Cash Received (Operating Inflow)</span><span>₹{(data.metrics?.cashReceived || 0).toFixed(2)}</span></div>
-              <div className="flex justify-between text-red-600"><span>Cash Paid (Operating Outflow)</span><span>-₹{(data.metrics?.cashPaid || 0).toFixed(2)}</span></div>
-              <div className="flex justify-between font-bold border-t pt-2"><span>Net Movement</span><span>₹{(data.metrics?.netMovement || 0).toFixed(2)}</span></div>
-              <div className="flex justify-between font-bold text-lg bg-gray-100 p-2 rounded"><span>Closing Cash</span><span>₹{(data.metrics?.closingCash || 0).toFixed(2)}</span></div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader><CardTitle>Outflow Breakdown</CardTitle></CardHeader>
-            <CardContent>
-              <div className="space-y-2 text-sm text-gray-700">
-                <div className="flex justify-between"><span>General Expenses</span><span>₹{(data.breakdown?.outflows?.expenses || 0).toFixed(2)}</span></div>
-                <div className="flex justify-between"><span>Livestock Purchases</span><span>₹{(data.breakdown?.outflows?.animalPurchases || 0).toFixed(2)}</span></div>
-                <div className="flex justify-between"><span>Water Utility</span><span>₹{(data.breakdown?.outflows?.water || 0).toFixed(2)}</span></div>
-                <div className="flex justify-between"><span>Electricity Utility</span><span>₹{(data.breakdown?.outflows?.electricity || 0).toFixed(2)}</span></div>
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader><CardTitle>Cash Position</CardTitle></CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between font-bold"><span>Opening Cash</span><span>₹{(data.metrics?.openingCash || 0).toFixed(2)}</span></div>
+                <div className="flex justify-between text-green-600"><span>Cash Received (Operating Inflow)</span><span>₹{(data.metrics?.cashReceived || 0).toFixed(2)}</span></div>
+                <div className="flex justify-between text-red-600"><span>Cash Paid (Operating Outflow)</span><span>-₹{(data.metrics?.cashPaid || 0).toFixed(2)}</span></div>
+                <div className="flex justify-between font-bold border-t pt-2"><span>Net Movement</span><span>₹{(data.metrics?.netMovement || 0).toFixed(2)}</span></div>
+                <div className="flex justify-between font-bold text-lg bg-gray-100 p-2 rounded"><span>Closing Cash</span><span>₹{(data.metrics?.closingCash || 0).toFixed(2)}</span></div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle>Outflow Breakdown</CardTitle></CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm text-gray-700">
+                  <div className="flex justify-between"><span>General Expenses</span><span>₹{(data.breakdown?.outflows?.expenses || 0).toFixed(2)}</span></div>
+                  <div className="flex justify-between"><span>Livestock Purchases</span><span>₹{(data.breakdown?.outflows?.animalPurchases || 0).toFixed(2)}</span></div>
+                  <div className="flex justify-between"><span>Water Utility</span><span>₹{(data.breakdown?.outflows?.water || 0).toFixed(2)}</span></div>
+                  <div className="flex justify-between"><span>Electricity Utility</span><span>₹{(data.breakdown?.outflows?.electricity || 0).toFixed(2)}</span></div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Transaction History Ledger */}
+          {Array.isArray(data.transactions) && data.transactions.length > 0 && (
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h2 className="text-base font-bold text-gray-900">Transaction History</h2>
+                <span className="text-xs text-gray-400 font-medium">{data.transactions.length} entries</span>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-100 text-sm">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Description</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Category</th>
+                      <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50 bg-white">
+                    {data.transactions.map((txn: any) => (
+                      <tr key={txn.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-5 py-3 text-gray-500 whitespace-nowrap">
+                          {new Date(txn.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                        </td>
+                        <td className="px-5 py-3 text-gray-900 max-w-xs truncate">{txn.description}</td>
+                        <td className="px-5 py-3">
+                          <span className="inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-600">
+                            {txn.category}
+                          </span>
+                        </td>
+                        <td className={`px-5 py-3 text-right font-semibold whitespace-nowrap ${txn.type === 'INFLOW' ? 'text-emerald-600' : 'text-red-600'}`}>
+                          {txn.type === 'INFLOW' ? '+' : '-'}₹{Number(txn.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

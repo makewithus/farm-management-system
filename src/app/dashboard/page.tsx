@@ -32,6 +32,8 @@ export default async function DashboardPage() {
   let totalInventoryQty = 0;
   let slaughteredToday = 0;
   let avgYield = 0;
+  let batchesReadyForSale = 0;
+  let batchesReadyForSlaughter = 0;
   
   let allTimeRevenue = 0;
   let totalExpenses = 0;
@@ -54,7 +56,9 @@ export default async function DashboardPage() {
       feedAggResult,
       waterAggResult,
       elecAggResult,
-      paymentAggResult
+      paymentAggResult,
+      readyForSaleResult,
+      readyForSlaughterResult,
     ] = await Promise.all([
       db.animalBatch.count({ where: { farm_id: farmId, deleted_at: null, status: "ACTIVE" } }),
       db.animalBatch.aggregate({ _sum: { quantity: true }, where: { farm_id: farmId, deleted_at: null, status: "ACTIVE" } }),
@@ -104,7 +108,18 @@ export default async function DashboardPage() {
       db.feedConsumption.aggregate({ _sum: { cost: true }, where: { farm_id: farmId, deleted_at: null } }),
       db.waterUsage.aggregate({ _sum: { total_cost: true }, where: { farm_id: farmId, deleted_at: null } }),
       db.electricityUsage.aggregate({ _sum: { total_cost: true }, where: { farm_id: farmId, deleted_at: null } }),
-      db.customerPayment.aggregate({ _sum: { amount: true }, where: { farm_id: farmId, deleted_at: null } })
+      db.customerPayment.aggregate({ _sum: { amount: true }, where: { farm_id: farmId, deleted_at: null } }),
+      // Ready for Sale: ACTIVE batches with expected_sale_date within next 14 days
+      db.animalBatch.count({
+        where: {
+          farm_id: farmId, deleted_at: null, status: "ACTIVE",
+          expected_sale_date: { lte: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) }
+        }
+      }),
+      // Ready for Slaughter: batches with status SLAUGHTER_READY
+      db.animalBatch.count({
+        where: { farm_id: farmId, deleted_at: null, status: "SLAUGHTER_READY" }
+      }),
     ]);
     totalBatches = tb;
     animalSum = as as any;
@@ -124,6 +139,8 @@ export default async function DashboardPage() {
     totalInventoryQty = invQtyResult?._sum?.quantity || 0;
     slaughteredToday = slaughterTotalResult?._sum?.quantity_slaughtered || 0;
     avgYield = slaughterYieldResult?._avg?.yield_percentage || 0;
+    batchesReadyForSale = readyForSaleResult || 0;
+    batchesReadyForSlaughter = readyForSlaughterResult || 0;
     
     const sales = salesList as any[];
     const startOfToday = new Date(); startOfToday.setHours(0,0,0,0);
@@ -201,6 +218,8 @@ export default async function DashboardPage() {
     { label: "Active Batches", value: totalBatches.toString(), sub: "Currently housed", icon: Layers, color: "text-blue-500", bg: "bg-blue-50" },
     { label: "Mortality Today", value: todayMortality.toString(), sub: `${todayMortalityRate}%`, icon: Activity, color: todayMortality > 0 ? "text-status-danger" : "text-emerald-500", bg: todayMortality > 0 ? "bg-status-danger/10" : "bg-emerald-50", trend: `${todayMortalityRate}%` },
     { label: "Overdue Vax", value: overdueVaccinationsCount.toString(), sub: "Action Required", icon: ShieldPlus, color: "text-status-danger", bg: "bg-status-danger/10" },
+    { label: "Ready for Sale", value: batchesReadyForSale.toString(), sub: "Due within 14 days", icon: ArrowUpRight, color: "text-emerald-600", bg: "bg-emerald-50" },
+    { label: "Ready for Slaughter", value: batchesReadyForSlaughter.toString(), sub: "Slaughter-ready batches", icon: ArrowDownRight, color: "text-amber-600", bg: "bg-amber-50" },
   ];
 
   const resourceMetrics = [
@@ -353,8 +372,12 @@ export default async function DashboardPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {categories.map((cat) => {
                   const total = cat.animal_batches.reduce((sum: number, b: any) => sum + b.quantity, 0);
+                  const avgWeight = cat.animal_batches.length > 0
+                    ? (cat.animal_batches.reduce((s: number, b: any) => s + (b.average_weight || 0), 0) / cat.animal_batches.length).toFixed(1)
+                    : "—";
+                  const rooms = [...new Set(cat.animal_batches.map((b: any) => b.room?.name).filter(Boolean))];
                   return (
-                    <div key={cat.id} className="border border-gray-200 rounded-xl p-5 hover:border-brand-primary/30 transition-colors bg-white">
+                    <div key={cat.id} className="relative group border border-gray-200 rounded-xl p-5 hover:border-brand-primary/30 transition-colors bg-white">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-lg">
@@ -371,6 +394,18 @@ export default async function DashboardPage() {
                         <span className="flex items-center gap-1.5">
                           <div className="w-2 h-2 rounded-full bg-red-500"></div> {cat.mortality_percentage}% Max Mort.
                         </span>
+                      </div>
+                      {/* Hover popup — only data already in scope */}
+                      <div className="absolute bottom-full left-0 mb-2 z-20 w-52 bg-gray-900 text-white text-xs rounded-xl p-3 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 pointer-events-none">
+                        <p className="font-bold text-[10px] uppercase tracking-wider text-gray-400 mb-2">Batch Summary</p>
+                        <div className="space-y-1.5">
+                          <div className="flex justify-between"><span className="text-gray-400">Type</span><span className="font-medium">{cat.name}</span></div>
+                          <div className="flex justify-between"><span className="text-gray-400">Active Batches</span><span className="font-medium">{cat.animal_batches.length}</span></div>
+                          <div className="flex justify-between"><span className="text-gray-400">Total Animals</span><span className="font-medium">{total.toLocaleString()}</span></div>
+                          <div className="flex justify-between"><span className="text-gray-400">Avg Weight</span><span className="font-medium">{avgWeight} kg</span></div>
+                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Rooms</span><span className="font-medium text-right truncate">{rooms.length > 0 ? rooms.join(", ") : "—"}</span></div>
+                        </div>
+                        <div className="absolute -bottom-1.5 left-5 w-3 h-3 bg-gray-900 rotate-45"></div>
                       </div>
                     </div>
                   );

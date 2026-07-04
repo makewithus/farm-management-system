@@ -68,7 +68,7 @@ export function CustomerForm({ onSuccess, initialData, onCancel }: { onSuccess: 
     }
   };
 
-  const customerTypes = ["Retail", "Wholesale", "Contract Buyer", "Other"];
+  const customerTypes = ["Retail", "Wholesale", "Contract Buyer", "Slaughter Buyer", "Other"];
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-4">

@@ -111,6 +111,50 @@ export async function GET(req: NextRequest) {
     const openingCash = priorIn - priorOut;
     const closingCash = openingCash + netMovement;
 
+    // Build chronological ledger from data already in memory — no new queries
+    const transactions = [
+      ...customerPayments.map(p => ({
+        id: p.id,
+        date: p.payment_date,
+        type: "INFLOW" as const,
+        description: `Payment received via ${p.payment_method}`,
+        category: "Customer Payment",
+        amount: p.amount,
+      })),
+      ...expenses.map(e => ({
+        id: e.id,
+        date: e.expense_date,
+        type: "OUTFLOW" as const,
+        description: e.description || e.category,
+        category: e.category,
+        amount: e.amount,
+      })),
+      ...batches.map(b => ({
+        id: b.id,
+        date: b.arrival_date,
+        type: "OUTFLOW" as const,
+        description: `Batch purchase: ${b.batch_number}`,
+        category: "Livestock Purchase",
+        amount: b.initial_quantity * b.cost_per_animal,
+      })),
+      ...waterUsages.map(w => ({
+        id: w.id,
+        date: w.date,
+        type: "OUTFLOW" as const,
+        description: "Water utility",
+        category: "Water",
+        amount: w.total_cost,
+      })),
+      ...electricityUsages.map(e => ({
+        id: e.id,
+        date: e.date,
+        type: "OUTFLOW" as const,
+        description: "Electricity utility",
+        category: "Electricity",
+        amount: e.total_cost,
+      })),
+    ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
     return NextResponse.json({
       metrics: {
         openingCash,
@@ -129,7 +173,8 @@ export async function GET(req: NextRequest) {
           water: waterTotal,
           electricity: electricityTotal
         }
-      }
+      },
+      transactions,
     });
 
   } catch (error) {

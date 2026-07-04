@@ -449,8 +449,8 @@ export function SalesForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
                   <select {...register(`items.${index}.batch_id` as never)} disabled={!canEditFinancially || isReadOnly} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-brand-primary focus:border-brand-primary text-sm disabled:bg-gray-100 disabled:cursor-not-allowed">
                     <option value="">Select Batch...</option>
                     {batches.map(b => (
-                      <option key={b.id} value={b.id} disabled={!isActuallyEditing && b.quantity <= 0}>
-                        {b.batch_number}
+                      <option key={b.id} value={b.id} disabled={!isActuallyEditing && (b.quantity <= 0 || b.status !== "ACTIVE")}>
+                        {b.batch_number}{b.status !== "ACTIVE" ? ` (${b.status})` : ""}
                       </option>
                     ))}
                   </select>

@@ -109,6 +109,9 @@ export async function POST(req: NextRequest) {
           where: { id: item.batch_id, farm_id: farmId, deleted_at: null }
         });
         if (!batch) throw new Error(`Batch not found for ID: ${item.batch_id}`);
+        if (batch.status !== "ACTIVE") {
+          throw new Error(`Batch ${batch.batch_number} is not available for sale (status: ${batch.status})`);
+        }
         
         if (batch.quantity < item.quantity) {
           throw new Error(`Insufficient quantity in batch ${batch.batch_number}. Available: ${batch.quantity}`);

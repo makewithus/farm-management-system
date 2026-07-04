@@ -41,6 +41,8 @@ export default async function DashboardPage() {
   let totalReceivables = 0;
   
   let isOffline = false;
+  let nextSaleSub = "Due within 14 days";
+  let nextSlaughterSub = "Slaughter-ready batches";
 
   try {
     const [
@@ -110,15 +112,19 @@ export default async function DashboardPage() {
       db.electricityUsage.aggregate({ _sum: { total_cost: true }, where: { farm_id: farmId, deleted_at: null } }),
       db.customerPayment.aggregate({ _sum: { amount: true }, where: { farm_id: farmId, deleted_at: null } }),
       // Ready for Sale: ACTIVE batches with expected_sale_date within next 14 days
-      db.animalBatch.count({
+      db.animalBatch.findMany({
         where: {
           farm_id: farmId, deleted_at: null, status: "ACTIVE",
           expected_sale_date: { lte: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) }
-        }
+        },
+        select: { expected_sale_date: true },
+        orderBy: { expected_sale_date: 'asc' }
       }),
       // Ready for Slaughter: batches with status SLAUGHTER_READY
-      db.animalBatch.count({
-        where: { farm_id: farmId, deleted_at: null, status: "SLAUGHTER_READY" }
+      db.animalBatch.findMany({
+        where: { farm_id: farmId, deleted_at: null, status: "SLAUGHTER_READY" },
+        select: { updated_at: true },
+        orderBy: { updated_at: 'asc' }
       }),
     ]);
     totalBatches = tb;
@@ -139,9 +145,22 @@ export default async function DashboardPage() {
     totalInventoryQty = invQtyResult?._sum?.quantity || 0;
     slaughteredToday = slaughterTotalResult?._sum?.quantity_slaughtered || 0;
     avgYield = slaughterYieldResult?._avg?.yield_percentage || 0;
-    batchesReadyForSale = readyForSaleResult || 0;
-    batchesReadyForSlaughter = readyForSlaughterResult || 0;
+    batchesReadyForSale = readyForSaleResult?.length || 0;
+    batchesReadyForSlaughter = readyForSlaughterResult?.length || 0;
     
+    if (readyForSaleResult && readyForSaleResult.length > 0 && readyForSaleResult[0].expected_sale_date) {
+      const diffDays = Math.ceil((new Date(readyForSaleResult[0].expected_sale_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+      if (diffDays < 0) nextSaleSub = "Overdue";
+      else if (diffDays === 0) nextSaleSub = "Due: Today";
+      else nextSaleSub = `Next Due: In ${diffDays} days`;
+    }
+
+    if (readyForSlaughterResult && readyForSlaughterResult.length > 0 && readyForSlaughterResult[0].updated_at) {
+      const diffDays = Math.floor((new Date().getTime() - new Date(readyForSlaughterResult[0].updated_at).getTime()) / (1000 * 60 * 60 * 24));
+      if (diffDays === 0) nextSlaughterSub = "Ready since: Today";
+      else nextSlaughterSub = `Ready since: ${diffDays} ${diffDays === 1 ? 'day' : 'days'}`;
+    }
+
     const sales = salesList as any[];
     const startOfToday = new Date(); startOfToday.setHours(0,0,0,0);
     const startOfMonth = new Date(startOfToday.getFullYear(), startOfToday.getMonth(), 1);
@@ -218,8 +237,8 @@ export default async function DashboardPage() {
     { label: "Active Batches", value: totalBatches.toString(), sub: "Currently housed", icon: Layers, color: "text-blue-500", bg: "bg-blue-50" },
     { label: "Mortality Today", value: todayMortality.toString(), sub: `${todayMortalityRate}%`, icon: Activity, color: todayMortality > 0 ? "text-status-danger" : "text-emerald-500", bg: todayMortality > 0 ? "bg-status-danger/10" : "bg-emerald-50", trend: `${todayMortalityRate}%` },
     { label: "Overdue Vax", value: overdueVaccinationsCount.toString(), sub: "Action Required", icon: ShieldPlus, color: "text-status-danger", bg: "bg-status-danger/10" },
-    { label: "Ready for Sale", value: batchesReadyForSale.toString(), sub: "Due within 14 days", icon: ArrowUpRight, color: "text-emerald-600", bg: "bg-emerald-50" },
-    { label: "Ready for Slaughter", value: batchesReadyForSlaughter.toString(), sub: "Slaughter-ready batches", icon: ArrowDownRight, color: "text-amber-600", bg: "bg-amber-50" },
+    { label: "Ready for Sale", value: batchesReadyForSale.toString(), sub: nextSaleSub, icon: ArrowUpRight, color: "text-emerald-600", bg: "bg-emerald-50" },
+    { label: "Ready for Slaughter", value: batchesReadyForSlaughter.toString(), sub: nextSlaughterSub, icon: ArrowDownRight, color: "text-amber-600", bg: "bg-amber-50" },
   ];
 
   const resourceMetrics = [

@@ -64,15 +64,28 @@ export function BatchTable({ keyIndex, onEdit }: { keyIndex: number; onEdit?: (b
         const diffTime = date.getTime() - today.getTime();
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         
-        if (diffDays >= 0 && diffDays <= 14 && info.row.original.status === "ACTIVE") {
+        if (info.row.original.status !== "ACTIVE") {
+          return <span className="text-sm text-gray-500">{date.toLocaleDateString()}</span>;
+        }
+
+        if (diffDays < 0) {
           return (
             <div className="flex flex-col">
-              <span className="text-sm">{date.toLocaleDateString()}</span>
-              <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Due in {diffDays} {diffDays === 1 ? 'day' : 'days'}</span>
+              <span className="text-sm text-gray-900">{date.toLocaleDateString()}</span>
+              <span className="text-[10px] font-bold text-red-600 uppercase tracking-wider">Overdue</span>
             </div>
           );
         }
-        return <span className="text-sm">{date.toLocaleDateString()}</span>;
+        
+        if (diffDays >= 0 && diffDays <= 14) {
+          return (
+            <div className="flex flex-col">
+              <span className="text-sm text-gray-900">{date.toLocaleDateString()}</span>
+              <span className="text-[10px] font-bold text-orange-600 uppercase tracking-wider">Due in {diffDays} {diffDays === 1 ? 'day' : 'days'}</span>
+            </div>
+          );
+        }
+        return <span className="text-sm text-gray-500">{date.toLocaleDateString()}</span>;
       }
     }),
     columnHelper.accessor("status", { header: "Status" }),
@@ -94,16 +107,16 @@ export function BatchTable({ keyIndex, onEdit }: { keyIndex: number; onEdit?: (b
                   toast.error("Failed to update status");
                 }
               }} 
-              className="flex items-center gap-1.5 w-[140px] justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 hover:bg-amber-500 hover:text-white border border-amber-200 hover:border-amber-500 rounded-full transition-all duration-200"
+              className="flex items-center gap-1.5 w-[140px] justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-orange-700 bg-orange-50 hover:bg-orange-500 hover:text-white border border-orange-200 hover:border-orange-500 rounded-full transition-all duration-200"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5l10 -10"/></svg>
-              Ready
+              Mark for Slaughter
             </button>
           )}
           {info.row.original.status === "SLAUGHTER_READY" && (
-            <div className="flex items-center gap-1.5 w-[140px] justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full">
+            <div className="flex items-center gap-1.5 w-[140px] justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full cursor-default">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-              Ready
+              MARKED
             </div>
           )}
           {info.row.original.status !== "ACTIVE" && info.row.original.status !== "SLAUGHTER_READY" && (

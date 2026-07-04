@@ -13,7 +13,6 @@ const schema = z.object({
   stage_name: z.string().min(1, "Stage name is required"),
   expected_duration_days: z.coerce.number().min(1, "Duration must be > 0"),
   expected_weight: z.coerce.number().min(0.01, "Weight must be > 0"),
-  display_order: z.coerce.number().min(0),
 });
 
 export function StageForm({ onSuccess, initialData, onCancel }: { onSuccess: () => void; initialData?: any; onCancel?: () => void }) {
@@ -28,7 +27,6 @@ export function StageForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
       stage_name: "",
       expected_duration_days: 0,
       expected_weight: 0,
-      display_order: 0,
     }
   });
 
@@ -43,7 +41,6 @@ export function StageForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
         stage_name: initialData.stage_name || "",
         expected_duration_days: initialData.expected_duration_days || 0,
         expected_weight: initialData.expected_weight || 0,
-        display_order: initialData.display_order || 0,
       });
     } else {
       reset({
@@ -51,7 +48,6 @@ export function StageForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
         stage_name: "",
         expected_duration_days: 0,
         expected_weight: 0,
-        display_order: 0,
       });
     }
   }, [initialData, reset]);
@@ -59,11 +55,12 @@ export function StageForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     try {
+      const payload = { ...data, display_order: initialData?.display_order || 0 };
       if (initialData) {
-        await stageRepository.update(initialData.id, data);
+        await stageRepository.update(initialData.id, payload);
         toast.success("Stage updated!");
       } else {
-        await stageRepository.create(data);
+        await stageRepository.create(payload);
         toast.success("Stage saved!");
       }
       reset();
@@ -102,11 +99,7 @@ export function StageForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
           <input required type="number" step="0.01" {...register("expected_weight")} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500" />
           {errors.expected_weight && <p className="text-red-500 text-xs mt-1">{errors.expected_weight.message as string}</p>}
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Display Order</label>
-          <input required type="number" {...register("display_order")} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500" />
-          {errors.display_order && <p className="text-red-500 text-xs mt-1">{errors.display_order.message as string}</p>}
-        </div>
+
       </div>
       <div className="flex justify-end gap-3">
         {initialData && (

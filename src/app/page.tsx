@@ -19,7 +19,6 @@ export default async function LandingPage() {
           </div>
           <div className="hidden md:flex items-center gap-8 font-medium text-sm text-gray-600">
             <a href="#features" className="hover:text-gray-900 transition-colors">Features</a>
-            <a href="#testimonials" className="hover:text-gray-900 transition-colors">Customers</a>
             <a href="#pwa" className="hover:text-gray-900 transition-colors">App</a>
           </div>
           <div className="flex items-center gap-4">
@@ -190,45 +189,6 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section id="testimonials" className="py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4 tracking-tight">Loved by farm owners</h2>
-            <p className="text-lg text-gray-600">See how Farm ERP is changing the way modern agriculture operates.</p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { name: "Sarah Jenkins", role: "Owner, Green Valley Farms", text: "We completely eliminated our spreadsheet chaos. The batch-wise tracking and mortality metrics alone saved us thousands this quarter." },
-              { name: "Michael Chen", role: "Operations Manager", text: "The offline capability is a lifesaver. Our barns have terrible reception, but my team can log feed consumption without missing a beat." },
-              { name: "David Miller", role: "Chief Accountant", text: "The integration between the POS invoicing and the general ledger is seamless. The RBAC ensures my workers only see what they need to." }
-            ].map((t, idx) => (
-              <div key={idx} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between">
-                <div>
-                  <div className="flex gap-1 text-amber-400 mb-4">
-                    <Star className="w-4 h-4 fill-current" />
-                    <Star className="w-4 h-4 fill-current" />
-                    <Star className="w-4 h-4 fill-current" />
-                    <Star className="w-4 h-4 fill-current" />
-                    <Star className="w-4 h-4 fill-current" />
-                  </div>
-                  <p className="text-gray-700 text-sm mb-6 leading-relaxed">"{t.text}"</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-brand-primary/10 rounded-full flex items-center justify-center text-brand-primary font-bold text-sm">
-                    {t.name.charAt(0)}
-                  </div>
-                  <div>
-                    <h5 className="font-semibold text-gray-900 text-sm">{t.name}</h5>
-                    <p className="text-xs text-gray-500">{t.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-24 bg-[#0F172A]">
@@ -273,7 +233,6 @@ export default async function LandingPage() {
               <h4 className="font-semibold text-gray-900 text-sm mb-4">Product</h4>
               <ul className="space-y-2.5 text-gray-500 text-sm">
                 <li><a href="#features" className="hover:text-gray-900 transition-colors">Features</a></li>
-                <li><a href="#testimonials" className="hover:text-gray-900 transition-colors">Customers</a></li>
                 <li><a href="#pwa" className="hover:text-gray-900 transition-colors">Mobile App</a></li>
                 <li><a href="#" className="hover:text-gray-900 transition-colors">Pricing</a></li>
               </ul>

@@ -78,7 +78,6 @@ export function StageTable({ keyIndex, onEdit }: { keyIndex: number; onEdit?: (s
       )
     }),
     columnHelper.accessor("stage_name", { header: "Stage Name" }),
-    columnHelper.accessor("display_order", { header: "Order" }),
     columnHelper.accessor("expected_duration_days", { header: "Duration (Days)" }),
     columnHelper.accessor("expected_weight", { header: "Target Weight" }),
     ...(canMutate ? [columnHelper.display({

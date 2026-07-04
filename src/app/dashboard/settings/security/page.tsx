@@ -155,7 +155,7 @@ export default function SecurityPage() {
     <div className="p-6 space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Security & Compliance</h1>
-        <p className="text-gray-500">Phase 12 Enterprise Data Protection and Audit Controls</p>
+        <p className="text-gray-500">Enterprise Data Protection and Audit Controls</p>
       </div>
 
       <div className="flex space-x-2 border-b pb-2">
@@ -351,7 +351,7 @@ export default function SecurityPage() {
                   <div className="flex justify-between"><span>CRM Suppliers</span> <span>{analysisReport?.records?.suppliers || 0}</span></div>
                 </div>
               </div>
-              <p className="text-xs text-red-500 font-bold mt-4">Actual restore functionality remains disabled in Phase 12.</p>
+              <p className="text-xs text-red-500 font-bold mt-4">Actual restore functionality remains disabled.</p>
               <div className="flex justify-end pt-4">
                 <Button variant="outline" onClick={() => setAnalysisReport(null)}>Close</Button>
               </div>

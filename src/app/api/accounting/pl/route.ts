@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
       }),
       db.expense.aggregate({
         _sum: { amount: true },
-        where: { farm_id: farmId, deleted_at: null, ...(dateFilter ? { expense_date: dateFilter } : {}) }
+        where: { farm_id: farmId, deleted_at: null, category: { not: "OPENING_BALANCE" }, ...(dateFilter ? { expense_date: dateFilter } : {}) }
       }),
       db.waterUsage.aggregate({
         _sum: { total_cost: true },
@@ -87,7 +87,7 @@ export async function GET(req: NextRequest) {
     const expenseBreakdown = await db.expense.groupBy({
       by: ['category'],
       _sum: { amount: true },
-      where: { farm_id: farmId, deleted_at: null, category: { notIn: ['Slaughter', 'Processing', 'Butchery'] }, ...(dateFilter ? { expense_date: dateFilter } : {}) }
+      where: { farm_id: farmId, deleted_at: null, category: { notIn: ['Slaughter', 'Processing', 'Butchery', 'OPENING_BALANCE'] }, ...(dateFilter ? { expense_date: dateFilter } : {}) }
     });
 
     return NextResponse.json({

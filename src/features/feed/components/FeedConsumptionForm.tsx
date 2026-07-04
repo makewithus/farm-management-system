@@ -31,6 +31,7 @@ export function FeedConsumptionForm({ onSuccess }: { onSuccess: () => void }) {
     }
   });
 
+  const watchBatchId = watch("batch_id");
   const watchFeedTypeId = watch("feed_type_id");
   const watchQuantity = watch("quantity_kg");
 
@@ -68,6 +69,30 @@ export function FeedConsumptionForm({ onSuccess }: { onSuccess: () => void }) {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    const fetchDefaultFeed = async () => {
+      if (watchBatchId && !watchFeedTypeId) {
+        try {
+          const allFeeds = await feedConsumptionRepository.getAll();
+          const batchFeeds = allFeeds
+            .filter((f: any) => f.batch_id === watchBatchId && !f.deleted_at)
+            .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          
+          if (batchFeeds.length > 0) {
+            const lastFeedId = batchFeeds[0].feed_type_id;
+            if (lastFeedId) {
+               setValue("feed_type_id", lastFeedId);
+               toast.info("Auto-selected default feed based on recent history");
+            }
+          }
+        } catch (e) {
+          console.warn("Could not infer default feed", e);
+        }
+      }
+    };
+    fetchDefaultFeed();
+  }, [watchBatchId, setValue, watchFeedTypeId]);
 
   const getAdjustedStock = (feed: any) => {
     if (!feed) return 0;

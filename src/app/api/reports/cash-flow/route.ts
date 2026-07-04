@@ -44,6 +44,7 @@ export async function GET(req: NextRequest) {
       where: {
         farm_id: farmId,
         expense_date: { gte: startDate, lte: endDate },
+        category: { not: "OPENING_BALANCE" },
         deleted_at: null,
       }
     });
@@ -91,7 +92,7 @@ export async function GET(req: NextRequest) {
 
     // Outflow before start
     const priorExpenses = await db.expense.findMany({
-      where: { farm_id: farmId, expense_date: { lt: startDate }, deleted_at: null }
+      where: { farm_id: farmId, expense_date: { lt: startDate }, category: { not: "OPENING_BALANCE" }, deleted_at: null }
     });
     const priorBatches = await db.animalBatch.findMany({
       where: { farm_id: farmId, arrival_date: { lt: startDate }, deleted_at: null }
@@ -108,7 +109,12 @@ export async function GET(req: NextRequest) {
                      priorWater.reduce((sum, w) => sum + w.total_cost, 0) +
                      priorElectricity.reduce((sum, e) => sum + e.total_cost, 0);
 
-    const openingCash = priorIn - priorOut;
+    const manualOpeningCashExpenses = await db.expense.findMany({
+      where: { farm_id: farmId, category: "OPENING_BALANCE", deleted_at: null }
+    });
+    const manualOpeningCash = manualOpeningCashExpenses.reduce((sum, e) => sum + e.amount, 0);
+
+    const openingCash = priorIn - priorOut + manualOpeningCash;
     const closingCash = openingCash + netMovement;
 
     // Build chronological ledger from data already in memory — no new queries

@@ -10,6 +10,9 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianG
 export default function AccountsDashboardPage() {
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showOpeningCash, setShowOpeningCash] = useState(false);
+  const [openingCashAmount, setOpeningCashAmount] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchDashboard = async () => {
     try {
@@ -22,6 +25,34 @@ export default function AccountsDashboardPage() {
       toast.error("Failed to load dashboard data");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSetOpeningCash = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!openingCashAmount || isNaN(Number(openingCashAmount))) return toast.error("Invalid amount");
+    try {
+      setIsSubmitting(true);
+      const res = await fetch("/api/expenses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          expense_date: new Date().toISOString(),
+          category: "OPENING_BALANCE",
+          description: "System Opening Cash Balance",
+          amount: Number(openingCashAmount),
+          notes: "Initial balance injection"
+        })
+      });
+      if (!res.ok) throw new Error("Failed to set opening cash");
+      toast.success("Opening cash recorded successfully");
+      setShowOpeningCash(false);
+      setOpeningCashAmount("");
+      fetchDashboard();
+    } catch (error) {
+      toast.error("Failed to set opening cash");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -43,6 +74,9 @@ export default function AccountsDashboardPage() {
           <p className="text-gray-500 text-sm mt-1">Unified view of your financial health and assets.</p>
         </div>
         <div className="flex gap-2">
+          <button onClick={() => setShowOpeningCash(true)} className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-2 shadow-sm">
+            <Wallet className="w-4 h-4" /> Set Opening Cash
+          </button>
           <Link href="/dashboard/reports/pl" className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-2 shadow-sm">
             Profit & Loss <ArrowRight className="w-4 h-4" />
           </Link>
@@ -88,6 +122,7 @@ export default function AccountsDashboardPage() {
             <div className="bg-blue-100 p-2 rounded-lg"><Wallet className="w-4 h-4 text-blue-600" /></div>
           </div>
           <p className="text-2xl font-bold text-gray-900 mt-4">₹{metrics.cashPosition.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+          <p className="text-xs text-gray-400 mt-1">Incl. opening cash balance</p>
         </div>
 
         {/* Row 2 */}
@@ -239,6 +274,27 @@ export default function AccountsDashboardPage() {
           </div>
         </div>
       </div>
+
+      {showOpeningCash && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm p-6 relative">
+            <h2 className="text-lg font-bold text-gray-900 mb-1">Set Opening Cash</h2>
+            <p className="text-sm text-gray-500 mb-5">Record the initial cash balance of your farm.</p>
+            <form onSubmit={handleSetOpeningCash}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Amount (₹)</label>
+                  <input type="number" step="0.01" required value={openingCashAmount} onChange={e => setOpeningCashAmount(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-primary" placeholder="0.00" />
+                </div>
+              </div>
+              <div className="mt-6 flex justify-end gap-3">
+                <button type="button" onClick={() => setShowOpeningCash(false)} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">Cancel</button>
+                <button type="submit" disabled={isSubmitting} className="px-4 py-2 text-sm font-medium text-white bg-brand-primary rounded-md hover:bg-brand-secondary disabled:opacity-50">Save Balance</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

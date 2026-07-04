@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { auth } from "@/auth";
-import { logAudit } from "@/lib/audit";
+import { logAuditEvent } from "@/lib/auditLogger";
 import { isManager } from "@/lib/rbac";
 import { z } from "zod";
 
@@ -80,7 +80,16 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
       },
     });
 
-    await logAudit(session.user.id, farmId, "UPDATE", "AnimalBatch", id);
+    await logAuditEvent({
+      userId: session.user.id,
+      farmId,
+      module: "BATCHES",
+      action: "UPDATE",
+      entityType: "AnimalBatch",
+      entityId: id,
+      beforeSnapshot: batch,
+      afterSnapshot: updated,
+    });
     return NextResponse.json(updated);
   } catch (error) {
     if (error instanceof z.ZodError) return NextResponse.json({ error: error.flatten().fieldErrors }, { status: 400 });
@@ -104,7 +113,16 @@ export async function DELETE(req: NextRequest, context: { params: Promise<{ id: 
       data: { deleted_at: new Date(), status: "DELETED" },
     });
 
-    await logAudit(session.user.id, farmId, "DELETE", "AnimalBatch", id);
+    await logAuditEvent({
+      userId: session.user.id,
+      farmId,
+      module: "BATCHES",
+      action: "DELETE",
+      entityType: "AnimalBatch",
+      entityId: id,
+      beforeSnapshot: batch,
+      afterSnapshot: { ...batch, deleted_at: new Date(), status: "DELETED" }
+    });
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Failed to delete" }, { status: 500 });

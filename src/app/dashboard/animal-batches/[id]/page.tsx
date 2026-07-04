@@ -34,6 +34,7 @@ export default function BatchDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [mortalityAdjustments, setMortalityAdjustments] = useState({ pending: 0, deleted: 0, updatedDelta: 0 });
   const [offlineMortalityList, setOfflineMortalityList] = useState<any[]>([]);
+  const [stageHistory, setStageHistory] = useState<any[]>([]);
   const { canMutate } = useRBAC();
 
   const mForm = useForm({
@@ -71,9 +72,23 @@ export default function BatchDetailsPage() {
     }
   };
 
+  const fetchStageHistory = async () => {
+    if (!id) return;
+    try {
+      const res = await fetch(`/api/animal-batches/${id}/history`);
+      if (res.ok) {
+        const json = await res.json();
+        setStageHistory(json.data);
+      }
+    } catch (e) {
+      console.error("Error loading stage history", e);
+    }
+  };
+
   useEffect(() => {
     fetchBatch();
     loadOfflineAdjustments();
+    fetchStageHistory();
   }, [id]);
 
   const onMortalitySubmit = async (data: any) => {
@@ -228,6 +243,22 @@ export default function BatchDetailsPage() {
                 </div>
               ))}
               {(batch?.mortalities ?? []).length === 0 && offlineMortalityList.length === 0 && <p className="text-sm text-gray-500">No mortality recorded.</p>}
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-xl border shadow-sm mt-6">
+            <h3 className="font-medium mb-3">Stage History</h3>
+            <div className="space-y-4 max-h-64 overflow-y-auto pl-2 border-l-2 border-gray-100">
+              {stageHistory.length === 0 ? (
+                <p className="text-sm text-gray-500">No stage transitions recorded yet.</p>
+              ) : (
+                stageHistory.map((h: any, i: number) => (
+                  <div key={h.id} className="relative pl-4">
+                    <div className="absolute w-3 h-3 bg-brand-primary rounded-full -left-[1.35rem] top-1 border-2 border-white"></div>
+                    <p className="text-sm font-medium text-gray-900">{h.stage_name}</p>
+                    <p className="text-xs text-gray-500">{format(new Date(h.date), "MMM d, yyyy h:mm a")} • by {h.user_name}</p>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

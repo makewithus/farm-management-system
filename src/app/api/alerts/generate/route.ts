@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
         db.electricityUsage.findMany({ where: { farm_id: farmId, deleted_at: null, date: { gte: thirtyDaysAgo } } }),
         db.animalBatch.findMany({ where: { farm_id: farmId, deleted_at: null, status: 'ACTIVE' }, include: { current_stage: true, feedConsumptions: { where: { deleted_at: null } }, salesInvoiceItems: { where: { deleted_at: null, invoice: { deleted_at: null } }, include: { invoice: true } } } }),
         db.salesInvoice.findMany({ where: { farm_id: farmId, deleted_at: null, invoice_date: { gte: thirtyDaysAgo } } }),
-        db.expense.findMany({ where: { farm_id: farmId, deleted_at: null, expense_date: { gte: thirtyDaysAgo } } }),
+        db.expense.findMany({ where: { farm_id: farmId, deleted_at: null, category: { not: "OPENING_BALANCE" }, expense_date: { gte: thirtyDaysAgo } } }),
         db.$queryRaw<{id: string, initial_quantity: number}[]>`SELECT id, initial_quantity FROM animal_batches WHERE farm_id = ${farmId}::uuid`
       ]);
 

@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   try {
     // 1. Profit & Loss Metrics
     const sales = await db.salesInvoice.aggregate({ _sum: { total: true }, where: { farm_id: farmId, deleted_at: null } });
-    const expenses = await db.expense.aggregate({ _sum: { amount: true }, where: { farm_id: farmId, deleted_at: null } });
+    const expenses = await db.expense.aggregate({ _sum: { amount: true }, where: { farm_id: farmId, category: { not: "OPENING_BALANCE" }, deleted_at: null } });
     const feed = await db.feedConsumption.aggregate({ _sum: { cost: true }, where: { farm_id: farmId, deleted_at: null } });
     const water = await db.waterUsage.aggregate({ _sum: { total_cost: true }, where: { farm_id: farmId, deleted_at: null } });
     const electricity = await db.electricityUsage.aggregate({ _sum: { total_cost: true }, where: { farm_id: farmId, deleted_at: null } });
@@ -33,12 +33,16 @@ export async function GET(req: NextRequest) {
     const payments = await db.customerPayment.findMany({ where: { farm_id: farmId, deleted_at: null } });
     const batches = await db.animalBatch.findMany({ where: { farm_id: farmId, deleted_at: null } });
     
-    const totalCashIn = payments.reduce((acc, p) => acc + p.amount, 0);
     const expensesRaw = await db.expense.findMany({ where: { farm_id: farmId, deleted_at: null } });
+    const operatingExpenses = expensesRaw.filter(e => e.category !== "OPENING_BALANCE");
+    const openingBalances = expensesRaw.filter(e => e.category === "OPENING_BALANCE");
+
+    const totalCashIn = payments.reduce((acc, p) => acc + p.amount, 0) + openingBalances.reduce((acc, e) => acc + e.amount, 0);
+    
     const waterUsages = await db.waterUsage.findMany({ where: { farm_id: farmId, deleted_at: null } });
     const electricUsages = await db.electricityUsage.findMany({ where: { farm_id: farmId, deleted_at: null } });
 
-    const totalCashOut = expensesRaw.reduce((acc, e) => acc + e.amount, 0) +
+    const totalCashOut = operatingExpenses.reduce((acc, e) => acc + e.amount, 0) +
                          batches.reduce((acc, b) => acc + (b.initial_quantity * b.cost_per_animal), 0) +
                          waterUsages.reduce((acc, w) => acc + w.total_cost, 0) +
                          electricUsages.reduce((acc, e) => acc + e.total_cost, 0);
@@ -75,10 +79,19 @@ export async function GET(req: NextRequest) {
     ];
 
     // 4. Recent Financial Activity (Combines Payments and Expenses)
-    const recentExpenses = expensesRaw.map(e => ({
+    const recentExpenses = operatingExpenses.map(e => ({
       id: e.id,
       date: e.expense_date,
       type: 'EXPENSE',
+      description: e.description,
+      amount: e.amount,
+      category: e.category
+    }));
+    
+    const recentOpeningCash = openingBalances.map(e => ({
+      id: e.id,
+      date: e.expense_date,
+      type: 'PAYMENT_RECEIVED', // Treat as inflow visually
       description: e.description,
       amount: e.amount,
       category: e.category
@@ -93,7 +106,7 @@ export async function GET(req: NextRequest) {
       category: 'Revenue'
     }));
 
-    const recentActivity = [...recentExpenses, ...recentPayments]
+    const recentActivity = [...recentExpenses, ...recentPayments, ...recentOpeningCash]
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 10);
 

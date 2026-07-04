@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const expenses = await db.expense.findMany({
-      where: { farm_id: farmId, deleted_at: null },
+      where: { farm_id: farmId, deleted_at: null, category: { not: "OPENING_BALANCE" } },
       orderBy: { expense_date: "desc" },
     });
     return NextResponse.json({ data: expenses });

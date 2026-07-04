@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
     });
 
     const expensesP = db.expense.findMany({
-      where: { farm_id: farmId, deleted_at: null, ...(dateFilter ? { expense_date: dateFilter } : {}) },
+      where: { farm_id: farmId, deleted_at: null, category: { not: "OPENING_BALANCE" }, ...(dateFilter ? { expense_date: dateFilter } : {}) },
       orderBy: { expense_date: 'asc' }
     });
 

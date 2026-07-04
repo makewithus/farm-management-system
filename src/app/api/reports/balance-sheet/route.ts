@@ -22,8 +22,12 @@ export async function GET(req: NextRequest) {
     const water = await db.waterUsage.findMany({ where: { farm_id: farmId, deleted_at: null } });
     const electric = await db.electricityUsage.findMany({ where: { farm_id: farmId, deleted_at: null } });
 
-    const totalCashIn = payments.reduce((acc, p) => acc + p.amount, 0);
-    const totalCashOut = expenses.reduce((acc, e) => acc + e.amount, 0) +
+    const operatingExpenses = expenses.filter(e => e.category !== "OPENING_BALANCE");
+    const openingBalanceEntries = expenses.filter(e => e.category === "OPENING_BALANCE");
+
+    const totalCashIn = payments.reduce((acc, p) => acc + p.amount, 0)
+                      + openingBalanceEntries.reduce((acc, e) => acc + e.amount, 0);
+    const totalCashOut = operatingExpenses.reduce((acc, e) => acc + e.amount, 0) +
                          batches.reduce((acc, b) => acc + (b.initial_quantity * b.cost_per_animal), 0) +
                          water.reduce((acc, w) => acc + w.total_cost, 0) +
                          electric.reduce((acc, e) => acc + e.total_cost, 0);

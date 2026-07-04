@@ -72,7 +72,7 @@ export default async function DashboardPage() {
       db.mortality.findMany({ where: { batch: { farm_id: farmId }, deleted_at: null }, orderBy: { date: "asc" }, include: { batch: { select: { animal_category_id: true } } } }),
       db.animalCategory.findMany({ 
         where: { farm_id: farmId, deleted_at: null },
-        include: { animal_batches: { where: { deleted_at: null, status: "ACTIVE" }, include: { room: true, current_stage: true } } }
+        include: { animal_batches: { where: { deleted_at: null, status: "ACTIVE" }, include: { room: true, current_stage: true, feedConsumptions: { orderBy: { date: "desc" }, take: 1, include: { feed_type: true } } } } }
       }),
       db.auditLog.findMany({
         where: { farm_id: farmId },
@@ -408,6 +408,8 @@ export default async function DashboardPage() {
                     : "—";
                   const rooms = [...new Set(cat.animal_batches.map((b: any) => b.room?.name).filter(Boolean))];
                   const stages = [...new Set(cat.animal_batches.map((b: any) => b.current_stage?.stage_name).filter(Boolean))];
+                  const feedPlans = [...new Set(cat.animal_batches.map((b: any) => b.feedConsumptions?.[0]?.feed_type?.name).filter(Boolean))];
+                  const feedPlanStatus = feedPlans.length > 0 ? feedPlans.join(", ") : "Not Available";
                   
                   const catVaccinations = pendingVaccinations.filter((v: any) => v.batch?.animal_category_id === cat.id);
                   const overdueCount = catVaccinations.filter((v: any) => new Date(v.due_date) < now).length;
@@ -445,7 +447,7 @@ export default async function DashboardPage() {
                           <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Assigned Room</span><span className="font-medium text-right truncate">{rooms.length > 0 ? rooms.join(", ") : "—"}</span></div>
                           <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Vaccinations</span><span className={`font-medium text-right truncate ${catVaccinations.length === 0 ? 'text-emerald-400' : overdueCount > 0 ? 'text-red-400' : 'text-amber-400'}`}>{vaxStatus}</span></div>
                           <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Health Notes</span><span className={`font-medium text-right truncate ${recentMorts.length > 0 ? 'text-red-400' : 'text-emerald-400'}`}>{healthNotes}</span></div>
-                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Feed Plan</span><span className="font-medium text-right truncate text-gray-500 italic">Not Available</span></div>
+                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Feed Plan</span><span className={`font-medium text-right truncate ${feedPlans.length > 0 ? 'text-gray-200' : 'text-gray-500 italic'}`}>{feedPlanStatus}</span></div>
                           <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Exp. Sale Value</span><span className="font-medium text-right truncate text-gray-500 italic">Not Available</span></div>
                           <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Risk Index</span><span className="font-medium text-right truncate">{cat.mortality_percentage}% Max Mort.</span></div>
                         </div>

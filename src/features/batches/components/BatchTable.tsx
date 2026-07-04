@@ -54,6 +54,27 @@ export function BatchTable({ keyIndex, onEdit }: { keyIndex: number; onEdit?: (b
     columnHelper.accessor(r => r.room?.name, { id: "room", header: "Room" }),
     columnHelper.accessor(r => r.current_stage?.stage_name, { id: "stage", header: "Stage" }),
     columnHelper.accessor("quantity", { header: "Quantity" }),
+    columnHelper.accessor("expected_sale_date", { 
+      header: "Expected Sale",
+      cell: (info) => {
+        const val = info.getValue();
+        if (!val) return <span className="text-gray-400">-</span>;
+        const date = new Date(val);
+        const today = new Date();
+        const diffTime = date.getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays >= 0 && diffDays <= 14 && info.row.original.status === "ACTIVE") {
+          return (
+            <div className="flex flex-col">
+              <span className="text-sm">{date.toLocaleDateString()}</span>
+              <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Due in {diffDays} {diffDays === 1 ? 'day' : 'days'}</span>
+            </div>
+          );
+        }
+        return <span className="text-sm">{date.toLocaleDateString()}</span>;
+      }
+    }),
     columnHelper.accessor("status", { header: "Status" }),
     columnHelper.display({
       id: "actions",

@@ -110,7 +110,7 @@ export function BatchTable({ keyIndex, onEdit }: { keyIndex: number; onEdit?: (b
               className="flex items-center gap-1.5 w-[140px] justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-orange-700 bg-orange-50 hover:bg-orange-500 hover:text-white border border-orange-200 hover:border-orange-500 rounded-full transition-all duration-200"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5l10 -10"/></svg>
-              Mark for Slaughter
+              Mark Slaughter Ready
             </button>
           )}
           {info.row.original.status === "SLAUGHTER_READY" && (

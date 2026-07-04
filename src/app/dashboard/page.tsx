@@ -34,6 +34,8 @@ export default async function DashboardPage() {
   let avgYield = 0;
   let batchesReadyForSale = 0;
   let batchesReadyForSlaughter = 0;
+  let animalsReadyForSale = 0;
+  let animalsReadyForSlaughter = 0;
   
   let allTimeRevenue = 0;
   let totalExpenses = 0;
@@ -65,12 +67,12 @@ export default async function DashboardPage() {
       db.animalBatch.count({ where: { farm_id: farmId, deleted_at: null, status: "ACTIVE" } }),
       db.animalBatch.aggregate({ _sum: { quantity: true }, where: { farm_id: farmId, deleted_at: null, status: "ACTIVE" } }),
       db.mortality.aggregate({ _sum: { quantity: true }, where: { batch: { farm_id: farmId }, deleted_at: null } }),
-      db.vaccination.findMany({ where: { batch: { farm_id: farmId }, status: "PENDING", deleted_at: null } }),
+      db.vaccination.findMany({ where: { batch: { farm_id: farmId }, status: "PENDING", deleted_at: null }, include: { batch: { select: { animal_category_id: true } } } }),
       db.vaccination.findMany({ where: { batch: { farm_id: farmId }, deleted_at: null }, orderBy: { due_date: "asc" } }),
-      db.mortality.findMany({ where: { batch: { farm_id: farmId }, deleted_at: null }, orderBy: { date: "asc" } }),
+      db.mortality.findMany({ where: { batch: { farm_id: farmId }, deleted_at: null }, orderBy: { date: "asc" }, include: { batch: { select: { animal_category_id: true } } } }),
       db.animalCategory.findMany({ 
         where: { farm_id: farmId, deleted_at: null },
-        include: { animal_batches: { where: { deleted_at: null, status: "ACTIVE" } } }
+        include: { animal_batches: { where: { deleted_at: null, status: "ACTIVE" }, include: { room: true, current_stage: true } } }
       }),
       db.auditLog.findMany({
         where: { farm_id: farmId },
@@ -117,13 +119,13 @@ export default async function DashboardPage() {
           farm_id: farmId, deleted_at: null, status: "ACTIVE",
           expected_sale_date: { lte: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) }
         },
-        select: { expected_sale_date: true },
+        select: { expected_sale_date: true, quantity: true },
         orderBy: { expected_sale_date: 'asc' }
       }),
       // Ready for Slaughter: batches with status SLAUGHTER_READY
       db.animalBatch.findMany({
         where: { farm_id: farmId, deleted_at: null, status: "SLAUGHTER_READY" },
-        select: { updated_at: true },
+        select: { updated_at: true, quantity: true },
         orderBy: { updated_at: 'asc' }
       }),
     ]);
@@ -147,6 +149,8 @@ export default async function DashboardPage() {
     avgYield = slaughterYieldResult?._avg?.yield_percentage || 0;
     batchesReadyForSale = readyForSaleResult?.length || 0;
     batchesReadyForSlaughter = readyForSlaughterResult?.length || 0;
+    animalsReadyForSale = readyForSaleResult?.reduce((sum, b) => sum + (b.quantity || 0), 0) || 0;
+    animalsReadyForSlaughter = readyForSlaughterResult?.reduce((sum, b) => sum + (b.quantity || 0), 0) || 0;
     
     if (readyForSaleResult && readyForSaleResult.length > 0 && readyForSaleResult[0].expected_sale_date) {
       const diffDays = Math.ceil((new Date(readyForSaleResult[0].expected_sale_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
@@ -237,8 +241,8 @@ export default async function DashboardPage() {
     { label: "Active Batches", value: totalBatches.toString(), sub: "Currently housed", icon: Layers, color: "text-blue-500", bg: "bg-blue-50" },
     { label: "Mortality Today", value: todayMortality.toString(), sub: `${todayMortalityRate}%`, icon: Activity, color: todayMortality > 0 ? "text-status-danger" : "text-emerald-500", bg: todayMortality > 0 ? "bg-status-danger/10" : "bg-emerald-50", trend: `${todayMortalityRate}%` },
     { label: "Overdue Vax", value: overdueVaccinationsCount.toString(), sub: "Action Required", icon: ShieldPlus, color: "text-status-danger", bg: "bg-status-danger/10" },
-    { label: "Ready for Sale", value: batchesReadyForSale.toString(), sub: nextSaleSub, icon: ArrowUpRight, color: "text-emerald-600", bg: "bg-emerald-50" },
-    { label: "Ready for Slaughter", value: batchesReadyForSlaughter.toString(), sub: nextSlaughterSub, icon: ArrowDownRight, color: "text-amber-600", bg: "bg-amber-50" },
+    { label: "Ready for Sale", value: `${batchesReadyForSale} ${batchesReadyForSale === 1 ? 'Batch' : 'Batches'}`, subTop: `${animalsReadyForSale.toLocaleString()} Animals Ready`, sub: nextSaleSub, icon: ArrowUpRight, color: "text-emerald-600", bg: "bg-emerald-50", badgeColor: batchesReadyForSale > 0 ? "bg-emerald-500" : "bg-gray-300" },
+    { label: "Ready for Slaughter", value: `${batchesReadyForSlaughter} ${batchesReadyForSlaughter === 1 ? 'Batch' : 'Batches'}`, subTop: `${animalsReadyForSlaughter.toLocaleString()} Animals Ready`, sub: nextSlaughterSub, icon: ArrowDownRight, color: "text-amber-600", bg: "bg-amber-50", badgeColor: batchesReadyForSlaughter > 0 ? "bg-amber-500" : "bg-gray-300" },
   ];
 
   const resourceMetrics = [
@@ -295,6 +299,7 @@ export default async function DashboardPage() {
                 <div>
                   <p className="text-sm text-gray-500 font-medium mb-1">{kpi.label}</p>
                   <p className="text-xl font-bold text-gray-900 leading-none">{kpi.value}</p>
+                  {kpi.sub && <p className="text-[11px] text-gray-400 mt-1.5 font-medium tracking-wide">{kpi.sub}</p>}
                 </div>
               </div>
             </div>
@@ -308,16 +313,21 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {operationalMetrics.map((kpi, idx) => (
             <div key={`ops-${idx}`} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group">
-              <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-lg ${kpi.bg} group-hover:scale-110 transition-transform`}>
+              <div className="flex items-start gap-4 w-full">
+                <div className={`p-3 rounded-lg ${kpi.bg} group-hover:scale-110 transition-transform shrink-0`}>
                   <kpi.icon className={`w-5 h-5 ${kpi.color}`} />
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-medium mb-1">{kpi.label}</p>
+                <div className="flex-1 w-full">
+                  <div className="flex justify-between items-start w-full">
+                    <p className="text-sm text-gray-500 font-medium mb-1">{kpi.label}</p>
+                    {kpi.badgeColor && <span className={`w-2 h-2 rounded-full ${kpi.badgeColor} mt-1.5 shrink-0 shadow-sm`}></span>}
+                  </div>
                   <div className="flex items-baseline gap-2">
                     <p className="text-xl font-bold text-gray-900 leading-none">{kpi.value}</p>
                     {kpi.trend && <span className={`text-xs font-bold ${kpi.trend.startsWith('+') ? 'text-emerald-600' : kpi.trend.startsWith('-') ? 'text-red-600' : 'text-gray-400'}`}>{kpi.trend}</span>}
                   </div>
+                  {kpi.subTop && <p className="text-xs text-gray-700 font-semibold mt-1.5">{kpi.subTop}</p>}
+                  {kpi.sub && <p className="text-[11px] text-gray-400 mt-1 font-medium tracking-wide">{kpi.sub}</p>}
                 </div>
               </div>
             </div>
@@ -339,8 +349,9 @@ export default async function DashboardPage() {
                   <p className="text-sm text-gray-500 font-medium mb-1">{kpi.label}</p>
                   <div className="flex items-baseline gap-2">
                     <p className="text-xl font-bold text-gray-900 leading-none">{kpi.value}</p>
-                    {kpi.trend && <span className={`text-xs font-bold ${kpi.trend.startsWith('+') ? 'text-emerald-600' : kpi.trend.startsWith('-') ? 'text-red-600' : 'text-gray-400'}`}>{kpi.trend}</span>}
+                    {kpi.trend && <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${kpi.trend === 'Stock OK' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>{kpi.trend}</span>}
                   </div>
+                  {kpi.sub && <p className="text-[11px] text-gray-400 mt-1.5 font-medium tracking-wide">{kpi.sub}</p>}
                 </div>
               </div>
             </div>
@@ -363,6 +374,7 @@ export default async function DashboardPage() {
                   <div className="flex items-baseline gap-2">
                     <p className="text-xl font-bold text-gray-900 leading-none">{kpi.value}</p>
                   </div>
+                  {kpi.sub && <p className="text-[11px] text-gray-400 mt-1.5 font-medium tracking-wide">{kpi.sub}</p>}
                 </div>
               </div>
             </div>
@@ -395,6 +407,15 @@ export default async function DashboardPage() {
                     ? (cat.animal_batches.reduce((s: number, b: any) => s + (b.average_weight || 0), 0) / cat.animal_batches.length).toFixed(1)
                     : "—";
                   const rooms = [...new Set(cat.animal_batches.map((b: any) => b.room?.name).filter(Boolean))];
+                  const stages = [...new Set(cat.animal_batches.map((b: any) => b.current_stage?.stage_name).filter(Boolean))];
+                  
+                  const catVaccinations = pendingVaccinations.filter((v: any) => v.batch?.animal_category_id === cat.id);
+                  const overdueCount = catVaccinations.filter((v: any) => new Date(v.due_date) < now).length;
+                  const vaxStatus = catVaccinations.length === 0 ? "All Up to Date" : `${catVaccinations.length} Pending${overdueCount > 0 ? ` (${overdueCount} Overdue)` : ''}`;
+                  
+                  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                  const recentMorts = allMortalities.filter((m: any) => m.batch?.animal_category_id === cat.id && new Date(m.date) >= sevenDaysAgo);
+                  const healthNotes = recentMorts.length > 0 ? `${recentMorts.length} Recent Mortalities` : "No Active Alerts";
                   return (
                     <div key={cat.id} className="relative group border border-gray-200 rounded-xl p-5 hover:border-brand-primary/30 transition-colors bg-white">
                       <div className="flex justify-between items-start mb-4">
@@ -415,14 +436,18 @@ export default async function DashboardPage() {
                         </span>
                       </div>
                       {/* Hover popup — only data already in scope */}
-                      <div className="absolute bottom-full left-0 mb-2 z-20 w-52 bg-gray-900 text-white text-xs rounded-xl p-3 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 pointer-events-none">
-                        <p className="font-bold text-[10px] uppercase tracking-wider text-gray-400 mb-2">Batch Summary</p>
+                      <div className="absolute bottom-full left-0 mb-2 z-20 w-64 bg-gray-900 text-white text-xs rounded-xl p-3 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 pointer-events-none">
+                        <p className="font-bold text-[10px] uppercase tracking-wider text-gray-400 mb-2">Category Summary</p>
                         <div className="space-y-1.5">
-                          <div className="flex justify-between"><span className="text-gray-400">Type</span><span className="font-medium">{cat.name}</span></div>
-                          <div className="flex justify-between"><span className="text-gray-400">Active Batches</span><span className="font-medium">{cat.animal_batches.length}</span></div>
-                          <div className="flex justify-between"><span className="text-gray-400">Total Animals</span><span className="font-medium">{total.toLocaleString()}</span></div>
-                          <div className="flex justify-between"><span className="text-gray-400">Avg Weight</span><span className="font-medium">{avgWeight} kg</span></div>
-                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Rooms</span><span className="font-medium text-right truncate">{rooms.length > 0 ? rooms.join(", ") : "—"}</span></div>
+                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Type</span><span className="font-medium text-right truncate">{cat.name}</span></div>
+                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Stage</span><span className="font-medium text-right truncate">{stages.length > 0 ? stages.join(", ") : "—"}</span></div>
+                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Avg Weight</span><span className="font-medium text-right truncate">{avgWeight} kg</span></div>
+                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Assigned Room</span><span className="font-medium text-right truncate">{rooms.length > 0 ? rooms.join(", ") : "—"}</span></div>
+                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Vaccinations</span><span className={`font-medium text-right truncate ${catVaccinations.length === 0 ? 'text-emerald-400' : overdueCount > 0 ? 'text-red-400' : 'text-amber-400'}`}>{vaxStatus}</span></div>
+                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Health Notes</span><span className={`font-medium text-right truncate ${recentMorts.length > 0 ? 'text-red-400' : 'text-emerald-400'}`}>{healthNotes}</span></div>
+                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Feed Plan</span><span className="font-medium text-right truncate text-gray-500 italic">Not Available</span></div>
+                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Exp. Sale Value</span><span className="font-medium text-right truncate text-gray-500 italic">Not Available</span></div>
+                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Risk Index</span><span className="font-medium text-right truncate">{cat.mortality_percentage}% Max Mort.</span></div>
                         </div>
                         <div className="absolute -bottom-1.5 left-5 w-3 h-3 bg-gray-900 rotate-45"></div>
                       </div>

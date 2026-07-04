@@ -59,7 +59,7 @@ export function BatchTable({ keyIndex, onEdit }: { keyIndex: number; onEdit?: (b
       id: "actions",
       header: "Actions",
       cell: (info) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 min-w-[200px]">
           {info.row.original.status === "ACTIVE" && canMutate && (
             <button 
               title="Mark Ready for Slaughter"
@@ -73,11 +73,22 @@ export function BatchTable({ keyIndex, onEdit }: { keyIndex: number; onEdit?: (b
                   toast.error("Failed to update status");
                 }
               }} 
-              className="p-1.5 text-orange-500 hover:text-white hover:bg-orange-500 rounded-md transition-colors"
+              className="flex items-center gap-1.5 w-[140px] justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 hover:bg-amber-500 hover:text-white border border-amber-200 hover:border-amber-500 rounded-full transition-all duration-200"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5l10 -10"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5l10 -10"/></svg>
+              Ready
             </button>
           )}
+          {info.row.original.status === "SLAUGHTER_READY" && (
+            <div className="flex items-center gap-1.5 w-[140px] justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              Ready
+            </div>
+          )}
+          {info.row.original.status !== "ACTIVE" && info.row.original.status !== "SLAUGHTER_READY" && (
+             <div className="w-[140px]"></div>
+          )}
+          
           <Link href={`/dashboard/animal-batches/${info.row.original.id}`} className="text-blue-500 hover:text-blue-700 p-1.5 transition-colors hover:bg-blue-50 rounded-md">
             <Eye className="w-4 h-4" />
           </Link>

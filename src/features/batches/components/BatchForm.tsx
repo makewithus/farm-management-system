@@ -17,6 +17,7 @@ const schema = z.object({
   average_weight: z.coerce.number().min(0),
   cost_per_animal: z.coerce.number().min(0),
   notes: z.string().optional(),
+  expected_sale_date: z.string().optional().nullable(),
 });
 
 export function BatchForm({ onSuccess, initialData, onCancel }: { onSuccess: () => void; initialData?: any; onCancel?: () => void }) {
@@ -30,6 +31,7 @@ export function BatchForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
     defaultValues: {
       batch_number: "", animal_category_id: "", room_id: "", current_stage_id: "",
       arrival_date: new Date().toISOString().split("T")[0],
+      expected_sale_date: "",
       quantity: 1, initial_weight: 0, average_weight: 0, cost_per_animal: 0, notes: ""
     }
   });
@@ -58,6 +60,7 @@ export function BatchForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
         room_id: initialData.room_id || "",
         current_stage_id: initialData.current_stage_id || "",
         arrival_date: initialData.arrival_date ? new Date(initialData.arrival_date).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+        expected_sale_date: initialData.expected_sale_date ? new Date(initialData.expected_sale_date).toISOString().split("T")[0] : "",
         quantity: initialData.quantity || 1,
         initial_weight: initialData.initial_weight || 0,
         average_weight: initialData.average_weight || 0,
@@ -68,6 +71,7 @@ export function BatchForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
       reset({
         batch_number: "", animal_category_id: "", room_id: "", current_stage_id: "",
         arrival_date: new Date().toISOString().split("T")[0],
+        expected_sale_date: "",
         quantity: 1, initial_weight: 0, average_weight: 0, cost_per_animal: 0, notes: ""
       });
     }
@@ -110,7 +114,11 @@ export function BatchForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
     setIsLoading(true);
     try {
       const { animalBatchRepository } = await import("@/lib/offline/repositories/animalBatchRepository");
-      const payload = { ...data, arrival_date: new Date(data.arrival_date).toISOString() };
+      const payload = { 
+        ...data, 
+        arrival_date: new Date(data.arrival_date).toISOString(),
+        expected_sale_date: data.expected_sale_date ? new Date(data.expected_sale_date).toISOString() : null
+      };
       
       if (initialData) {
         await animalBatchRepository.update(initialData.id, payload);
@@ -183,6 +191,13 @@ export function BatchForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
           <label className="block text-sm font-medium text-gray-700 mb-1">Arrival Date <span className="text-red-500">*</span></label>
           <input type="date" {...register("arrival_date")} className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
           {errors.arrival_date && <p className="text-red-500 text-xs mt-1">{errors.arrival_date.message as string}</p>}
+        </div>
+
+        {/* Expected Sale Date */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Expected Sale Date</label>
+          <input type="date" {...register("expected_sale_date")} className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+          {errors.expected_sale_date && <p className="text-red-500 text-xs mt-1">{errors.expected_sale_date.message as string}</p>}
         </div>
 
         {/* Quantity — with live capacity warning */}

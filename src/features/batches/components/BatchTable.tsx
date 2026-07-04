@@ -60,6 +60,24 @@ export function BatchTable({ keyIndex, onEdit }: { keyIndex: number; onEdit?: (b
       header: "Actions",
       cell: (info) => (
         <div className="flex items-center gap-2">
+          {info.row.original.status === "ACTIVE" && canMutate && (
+            <button 
+              title="Mark Ready for Slaughter"
+              onClick={async () => {
+                try {
+                  const { animalBatchRepository } = await import("@/lib/offline/repositories/animalBatchRepository");
+                  await animalBatchRepository.update(info.row.original.id, { status: "SLAUGHTER_READY" });
+                  toast.success("Batch marked ready for slaughter");
+                  fetchBatches();
+                } catch (e) {
+                  toast.error("Failed to update status");
+                }
+              }} 
+              className="p-1.5 text-orange-500 hover:text-white hover:bg-orange-500 rounded-md transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5l10 -10"/></svg>
+            </button>
+          )}
           <Link href={`/dashboard/animal-batches/${info.row.original.id}`} className="text-blue-500 hover:text-blue-700 p-1.5 transition-colors hover:bg-blue-50 rounded-md">
             <Eye className="w-4 h-4" />
           </Link>

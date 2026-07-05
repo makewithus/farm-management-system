@@ -58,10 +58,11 @@ export async function GET(req: NextRequest) {
         .reduce((sum, e) => sum + e.total_cost, 0);
 
       const utilityCost = waterCost + elecCost;
-      // Use quantity (current animals in batch) not initial_quantity.
-      // After a split, initial_quantity stays at the parent's original value,
-      // causing the parent batch to overstate its purchase cost.
-      const purchaseCost = b.quantity * b.cost_per_animal;
+      // Use initial_quantity as the historical purchase basis.
+      // If we use current quantity, fully sold batches will report a $0 purchase cost.
+      // Note: In split batches, child initial_quantity correctly reflects transferred animals.
+      // Parent batch initial_quantity retains the full original cost (known limitation of MVP).
+      const purchaseCost = (b.initial_quantity || b.quantity || 0) * b.cost_per_animal;
       const totalCost = feedCost + utilityCost + purchaseCost;
 
       // Revenue side — sum of SalesInvoiceItem.amount for this batch (non-cancelled invoices only)

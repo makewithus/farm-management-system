@@ -57,14 +57,18 @@ export async function GET(req: NextRequest) {
 
     let proportionalAnimalAndFeedCOGS = 0;
     for (const item of invoiceItems) {
-      // Use batch.quantity (current animals in batch) not initial_quantity.
-      // After a batch split, initial_quantity remains at the original value,
-      // which would overstate the cost basis per animal.
-      if (item.batch && item.batch.quantity > 0) {
-        const currentCost = item.batch.quantity * item.batch.cost_per_animal;
+      if (item.batch) {
+        // Purchase cost is fixed: quantity sold * fixed cost basis
+        const purchaseCOGS = item.quantity * item.batch.cost_per_animal;
+        
+        // Feed COGS: use initial_quantity as the stable denominator.
+        // For parent batches, initial_quantity is stable.
+        // For split child batches, initial_quantity reflects animals transferred in.
+        const denominator = Math.max(item.batch.initial_quantity || 1, 1);
         const batchFeedCost = item.batch.feedConsumptions.reduce((sum, f) => sum + f.cost, 0);
-        const unitCost = (currentCost + batchFeedCost) / item.batch.quantity;
-        proportionalAnimalAndFeedCOGS += (item.quantity * unitCost);
+        
+        const feedCOGS = item.quantity * (batchFeedCost / denominator);
+        proportionalAnimalAndFeedCOGS += (purchaseCOGS + feedCOGS);
       }
     }
 

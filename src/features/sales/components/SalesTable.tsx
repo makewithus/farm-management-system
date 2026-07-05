@@ -73,6 +73,17 @@ export function SalesTable({ keyIndex, onEdit, showCancelled }: { keyIndex: numb
       header: "Customer",
       cell: (info) => <div className="font-medium">{info.getValue()?.company_name || "-"}</div>
     }),
+    columnHelper.accessor("sale_type", {
+      header: "Channel",
+      cell: (info) => {
+        const type = info.getValue() || "Live Animal Sale";
+        return (
+          <span className="text-gray-600 text-xs font-medium px-2 py-1 bg-gray-100 rounded-md">
+            {type === "Live Animal Sale" ? "Standard" : type}
+          </span>
+        );
+      }
+    }),
     columnHelper.accessor("total", {
       header: "Amount",
       cell: (info) => <div className="font-bold text-emerald-600">₹{Number(info.getValue()).toFixed(2)}</div>

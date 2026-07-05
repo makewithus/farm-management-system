@@ -25,6 +25,7 @@ const schemaCreate = z.object({
   amount_paid: z.coerce.number().min(0).optional(),
   payment_method: z.string().optional(),
   reference_number: z.string().optional(),
+  sale_type: z.enum(["Live Animal Sale", "Retail", "Bulk Contract"]).default("Live Animal Sale"),
 });
 
 const schemaEditFull = z.object({
@@ -32,6 +33,7 @@ const schemaEditFull = z.object({
   invoice_date: z.string().min(1, "Invoice date is required"),
   notes: z.string().optional(),
   items: z.array(itemSchema).min(1, "At least one item is required"),
+  sale_type: z.enum(["Live Animal Sale", "Retail", "Bulk Contract"]).default("Live Animal Sale"),
 });
 
 const schemaEditNotes = z.object({
@@ -72,7 +74,8 @@ export function SalesForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
       payment_received: false,
       amount_paid: 0,
       payment_method: "Cash",
-      reference_number: ""
+      reference_number: "",
+      sale_type: "Live Animal Sale"
     } as any
   });
 
@@ -146,7 +149,8 @@ export function SalesForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
                 payment_received: false,
                 amount_paid: 0,
                 payment_method: "Cash",
-                reference_number: ""
+                reference_number: "",
+                sale_type: invoice.sale_type || "Live Animal Sale"
              });
            } else {
              toast.error("Failed to load full invoice data");
@@ -378,6 +382,15 @@ export function SalesForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
           <label className="block text-sm font-medium text-gray-700 mb-1">Invoice Number <span className="text-red-500">*</span></label>
           <input {...register("invoice_number")} disabled={isActuallyEditing} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-brand-primary focus:border-brand-primary disabled:bg-gray-100 disabled:cursor-not-allowed" />
           {(errors as any).invoice_number && <p className="text-red-500 text-xs mt-1">{(errors as any).invoice_number.message as string}</p>}
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Sale Channel <span className="text-red-500">*</span></label>
+          <select {...register("sale_type")} disabled={!canEditFinancially || isReadOnly} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-brand-primary focus:border-brand-primary disabled:bg-gray-100 disabled:cursor-not-allowed">
+            <option value="Live Animal Sale">Live Animal Sale (Standard)</option>
+            <option value="Retail">Retail</option>
+            <option value="Bulk Contract">Bulk Contract</option>
+          </select>
+          {(errors as any).sale_type && <p className="text-red-500 text-xs mt-1">{(errors as any).sale_type.message as string}</p>}
         </div>
       </div>
 

@@ -88,6 +88,7 @@ const fullEditSchema = z.object({
   invoice_date: z.string().min(1, "Invoice date is required"),
   notes: z.string().optional(),
   items: z.array(itemSchema).min(1, "At least one item is required"),
+  sale_type: z.enum(["Live Animal Sale", "Retail", "Bulk Contract"]).optional(),
 });
 
 export async function PUT(
@@ -251,6 +252,7 @@ export async function PUT(
           total: newTotal,
           subtotal: newTotal,
           payment_status: newPaymentStatus,
+          ...(parsed.sale_type ? { sale_type: parsed.sale_type } : {}),
         },
       });
     }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });

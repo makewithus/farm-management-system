@@ -25,6 +25,7 @@ const createSalesSchema = z.object({
   payment_method: z.string().optional(),
   reference_number: z.string().optional(),
   client_request_id: z.string().optional(),
+  sale_type: z.enum(["Live Animal Sale", "Retail", "Bulk Contract"]).default("Live Animal Sale"),
 });
 
 export async function GET(req: NextRequest) {
@@ -167,6 +168,7 @@ export async function POST(req: NextRequest) {
           customer_id: parsedData.customer_id,
           invoice_number: parsedData.invoice_number,
           invoice_date: new Date(parsedData.invoice_date),
+          sale_type: parsedData.sale_type,
           total: totalAmount,
           payment_status: paymentStatus,
           notes: parsedData.notes,

@@ -1,7 +1,9 @@
 import { OverviewAnalytics } from "@/features/dashboard/components/OverviewAnalytics";
-import { ArrowUpRight, ArrowDownRight, Droplets, Zap, Activity, Users, FileText, IndianRupee, Layers, ShieldPlus, Cloud, Sun, Leaf, TrendingUp, Package } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Droplets, Zap, Activity, Users, FileText, IndianRupee, Layers, ShieldPlus, Cloud, Sun, Leaf, TrendingUp, Package, Wallet } from "lucide-react";
 import { db } from "@/lib/db";
 import { auth } from "@/auth";
+import { GET as getAccountingDashboard } from "@/app/api/accounting/dashboard/route";
+import { NextRequest } from "next/server";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -41,10 +43,23 @@ export default async function DashboardPage() {
   let totalExpenses = 0;
   let netProfit = 0;
   let totalReceivables = 0;
+  let cashPosition = 0;
   
   let isOffline = false;
   let nextSaleSub = "Due within 14 days";
   let nextSlaughterSub = "Slaughter-ready batches";
+
+  try {
+    // Reuse accounting API for Cash Position
+    const dummyReq = new NextRequest(new URL("http://localhost/api/accounting/dashboard"));
+    const accRes = await getAccountingDashboard(dummyReq);
+    if (accRes.status === 200) {
+      const accJson = await accRes.json();
+      cashPosition = accJson?.data?.metrics?.cashPosition || 0;
+    }
+  } catch (e) {
+    console.error("Failed to fetch accounting API for cash position:", e);
+  }
 
   try {
     const [
@@ -233,6 +248,7 @@ export default async function DashboardPage() {
     { label: "Total Revenue", value: `₹${allTimeRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}`, sub: `Today: ₹${todayRevenue.toLocaleString()}`, icon: IndianRupee, color: "text-emerald-600", bg: "bg-emerald-50" },
     { label: "Total Expenses", value: `₹${totalExpenses.toLocaleString(undefined, {minimumFractionDigits: 2})}`, sub: "All time", icon: TrendingUp, color: "text-status-danger", bg: "bg-status-danger/10" },
     { label: "Net Profit", value: `₹${netProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}`, sub: "Overall", icon: Activity, color: netProfit >= 0 ? "text-emerald-500" : "text-status-danger", bg: netProfit >= 0 ? "bg-emerald-50" : "bg-status-danger/10" },
+    { label: "Cash Position", value: `₹${cashPosition.toLocaleString(undefined, {minimumFractionDigits: 2})}`, sub: "Opening Cash + Cash Flow", icon: Wallet, color: "text-blue-500", bg: "bg-blue-50" },
     { label: "Receivables", value: `₹${totalReceivables.toLocaleString(undefined, {minimumFractionDigits: 2})}`, sub: "Outstanding", icon: FileText, color: "text-amber-500", bg: "bg-amber-50" },
   ];
 
@@ -241,8 +257,6 @@ export default async function DashboardPage() {
     { label: "Active Batches", value: totalBatches.toString(), sub: "Currently housed", icon: Layers, color: "text-blue-500", bg: "bg-blue-50" },
     { label: "Mortality Today", value: todayMortality.toString(), sub: `${todayMortalityRate}%`, icon: Activity, color: todayMortality > 0 ? "text-status-danger" : "text-emerald-500", bg: todayMortality > 0 ? "bg-status-danger/10" : "bg-emerald-50", trend: `${todayMortalityRate}%` },
     { label: "Overdue Vax", value: overdueVaccinationsCount.toString(), sub: "Action Required", icon: ShieldPlus, color: "text-status-danger", bg: "bg-status-danger/10" },
-    { label: "Ready for Sale", value: `${batchesReadyForSale} ${batchesReadyForSale === 1 ? 'Batch' : 'Batches'}`, subTop: `${animalsReadyForSale.toLocaleString()} Animals Ready`, sub: nextSaleSub, icon: ArrowUpRight, color: "text-emerald-600", bg: "bg-emerald-50", badgeColor: batchesReadyForSale > 0 ? "bg-emerald-500" : "bg-gray-300" },
-    { label: "Ready for Slaughter", value: `${batchesReadyForSlaughter} ${batchesReadyForSlaughter === 1 ? 'Batch' : 'Batches'}`, subTop: `${animalsReadyForSlaughter.toLocaleString()} Animals Ready`, sub: nextSlaughterSub, icon: ArrowDownRight, color: "text-amber-600", bg: "bg-amber-50", badgeColor: batchesReadyForSlaughter > 0 ? "bg-amber-500" : "bg-gray-300" },
   ];
 
   const resourceMetrics = [
@@ -271,17 +285,42 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* Dashboard Top Header (Weather) */}
-      <div className="flex items-center justify-between bg-white p-5 rounded-xl border border-gray-200 shadow-sm mb-6">
+      {/* Dashboard Top Header (Weather & Ready Actions) */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between bg-white p-5 rounded-xl border border-gray-200 shadow-sm mb-6 gap-4">
         <div>
           <h1 className="text-xl font-bold text-gray-900 tracking-tight">Farm Overview</h1>
           <p className="text-sm text-gray-500 mt-1">Live metrics and operational data</p>
         </div>
-        <div className="flex items-center gap-4 bg-gray-50 py-2.5 px-5 rounded-lg border border-gray-200">
-          <weatherMetric.icon className={`w-5 h-5 ${weatherMetric.color}`} />
-          <div>
-            <p className="text-sm font-bold text-gray-900 leading-tight">{weatherMetric.value}</p>
-            <p className="text-xs text-gray-500">{weatherMetric.sub}</p>
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Ready for Sale */}
+          <div className="flex items-center gap-3 bg-emerald-50 py-2 px-4 rounded-lg border border-emerald-100">
+            <ArrowUpRight className="w-5 h-5 text-emerald-600" />
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-bold text-emerald-900 leading-tight">{batchesReadyForSale} {batchesReadyForSale === 1 ? 'Batch' : 'Batches'} for Sale</p>
+                {batchesReadyForSale > 0 && <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>}
+              </div>
+              <p className="text-xs text-emerald-700">{animalsReadyForSale.toLocaleString()} Animals • {nextSaleSub}</p>
+            </div>
+          </div>
+          {/* Ready for Slaughter */}
+          <div className="flex items-center gap-3 bg-amber-50 py-2 px-4 rounded-lg border border-amber-100">
+            <ArrowDownRight className="w-5 h-5 text-amber-600" />
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-bold text-amber-900 leading-tight">{batchesReadyForSlaughter} {batchesReadyForSlaughter === 1 ? 'Batch' : 'Batches'} for Slaughter</p>
+                {batchesReadyForSlaughter > 0 && <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>}
+              </div>
+              <p className="text-xs text-amber-700">{animalsReadyForSlaughter.toLocaleString()} Animals • {nextSlaughterSub}</p>
+            </div>
+          </div>
+          {/* Weather */}
+          <div className="flex items-center gap-3 bg-gray-50 py-2 px-4 rounded-lg border border-gray-200">
+            <weatherMetric.icon className={`w-5 h-5 ${weatherMetric.color}`} />
+            <div>
+              <p className="text-sm font-bold text-gray-900 leading-tight">{weatherMetric.value}</p>
+              <p className="text-xs text-gray-500">{weatherMetric.sub}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -289,7 +328,7 @@ export default async function DashboardPage() {
       {/* Financials */}
       <div className="mb-8">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-1">Financial Performance</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {financialMetrics.map((kpi, idx) => (
             <div key={`fin-${idx}`} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group">
               <div className="flex items-center gap-4">
@@ -320,13 +359,11 @@ export default async function DashboardPage() {
                 <div className="flex-1 w-full">
                   <div className="flex justify-between items-start w-full">
                     <p className="text-sm text-gray-500 font-medium mb-1">{kpi.label}</p>
-                    {kpi.badgeColor && <span className={`w-2 h-2 rounded-full ${kpi.badgeColor} mt-1.5 shrink-0 shadow-sm`}></span>}
                   </div>
                   <div className="flex items-baseline gap-2">
                     <p className="text-xl font-bold text-gray-900 leading-none">{kpi.value}</p>
                     {kpi.trend && <span className={`text-xs font-bold ${kpi.trend.startsWith('+') ? 'text-emerald-600' : kpi.trend.startsWith('-') ? 'text-red-600' : 'text-gray-400'}`}>{kpi.trend}</span>}
                   </div>
-                  {kpi.subTop && <p className="text-xs text-gray-700 font-semibold mt-1.5">{kpi.subTop}</p>}
                   {kpi.sub && <p className="text-[11px] text-gray-400 mt-1 font-medium tracking-wide">{kpi.sub}</p>}
                 </div>
               </div>

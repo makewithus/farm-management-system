@@ -20,7 +20,7 @@ interface TransferModalProps {
 export function TransferModal({ batch, onClose, onSuccess }: TransferModalProps) {
   const [rooms, setRooms] = useState<any[]>([]);
   const [destinationRoomId, setDestinationRoomId] = useState("");
-  const [quantityToMove, setQuantityToMove] = useState(1);
+  const [quantityToMove, setQuantityToMove] = useState<number | "">(1);
   const [isFullTransfer, setIsFullTransfer] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -62,7 +62,8 @@ export function TransferModal({ batch, onClose, onSuccess }: TransferModalProps)
       setError("Please select a destination room.");
       return;
     }
-    if (quantityToMove < 1 || quantityToMove > batch.quantity) {
+    const parsedQty = typeof quantityToMove === 'number' ? quantityToMove : 0;
+    if (parsedQty < 1 || parsedQty > batch.quantity) {
       setError(`Enter a number between 1 and ${batch.quantity}.`);
       return;
     }
@@ -72,7 +73,7 @@ export function TransferModal({ batch, onClose, onSuccess }: TransferModalProps)
       const { animalBatchRepository } = await import("@/lib/offline/repositories/animalBatchRepository");
       
       const payload = {
-        quantity_to_move: quantityToMove,
+        quantity_to_move: parsedQty,
         destination_room_id: destinationRoomId,
       };
       
@@ -98,7 +99,7 @@ export function TransferModal({ batch, onClose, onSuccess }: TransferModalProps)
     }
   };
 
-  const destQty = isFullTransfer ? batch.quantity : quantityToMove;
+  const destQty = isFullTransfer ? batch.quantity : (typeof quantityToMove === 'number' ? quantityToMove : 0);
   const remainingQty = batch.quantity - destQty;
 
   return (
@@ -136,11 +137,15 @@ export function TransferModal({ batch, onClose, onSuccess }: TransferModalProps)
               required
             >
               <option value="">Select a room…</option>
-              {rooms.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {r.name} · Capacity: {r.capacity}
-                </option>
-              ))}
+              {rooms.map((r) => {
+                const current = r.current_occupancy || 0;
+                const isFull = current >= r.capacity;
+                return (
+                  <option key={r.id} value={r.id} disabled={isFull}>
+                    {r.name} · Occupied: {current} / {r.capacity} {isFull ? '(FULL)' : ''}
+                  </option>
+                );
+              })}
             </select>
           </div>
 
@@ -156,8 +161,13 @@ export function TransferModal({ batch, onClose, onSuccess }: TransferModalProps)
               max={batch.quantity}
               value={quantityToMove}
               onChange={(e) => {
-                const v = parseInt(e.target.value, 10);
-                if (!isNaN(v)) setQuantityToMove(Math.min(Math.max(1, v), batch.quantity));
+                const val = e.target.value;
+                if (val === '') {
+                  setQuantityToMove('');
+                  return;
+                }
+                const v = parseInt(val, 10);
+                if (!isNaN(v)) setQuantityToMove(Math.min(v, batch.quantity));
               }}
               className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               disabled={isFullTransfer}

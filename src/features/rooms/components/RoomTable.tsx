@@ -65,7 +65,33 @@ export function RoomTable({ keyIndex, onEdit }: { keyIndex: number; onEdit?: (ro
         </span>
       )
     }),
-    columnHelper.accessor("capacity", { header: "Capacity" }),
+    columnHelper.accessor("capacity", { 
+      header: "Occupancy / Capacity",
+      cell: (info) => {
+        const capacity = info.getValue() as number;
+        const current = Math.max(0, info.row.original.current_occupancy || 0);
+        const percent = capacity > 0 ? Math.min(100, Math.round((current / capacity) * 100)) : 0;
+        
+        const textColor = percent >= 100 ? "text-red-700" : percent > 80 ? "text-amber-600" : "text-emerald-600";
+        const bgColor = percent >= 100 ? "bg-red-500" : percent > 80 ? "bg-amber-400" : "bg-emerald-500";
+        const trackColor = percent >= 100 ? "bg-red-100" : percent > 80 ? "bg-amber-100" : "bg-gray-100";
+
+        return (
+          <div className="flex flex-col gap-2 w-[160px] py-1">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-semibold text-gray-700 tracking-tight">{current} <span className="text-gray-400 font-medium">/ {capacity}</span></span>
+              <span className={`font-bold ${textColor}`}>{percent}%</span>
+            </div>
+            <div className={`h-1.5 w-full rounded-full overflow-hidden ${trackColor}`}>
+              <div 
+                className={`h-full rounded-full transition-all duration-500 shadow-sm ${bgColor}`} 
+                style={{ width: `${percent}%` }} 
+              />
+            </div>
+          </div>
+        );
+      }
+    }),
     columnHelper.accessor("allowed_stages", { 
       header: "Allowed Stages",
       cell: (info) => {

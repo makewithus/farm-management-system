@@ -134,7 +134,8 @@ export function BatchForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
       reset();
       onSuccess();
     } catch (err: any) {
-      toast.error(err.message);
+      const errorMessage = typeof err === 'string' ? err : (err.error || err.message || "An unexpected error occurred.");
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

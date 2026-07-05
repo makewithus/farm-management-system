@@ -111,7 +111,7 @@ export async function POST(
     // =========================================================
     const { v4: uuidv4 } = await import("uuid");
     const childId = uuidv4();
-    const childBatchNumber = `${sourceBatch.batch_number}-T${Date.now().toString(36).toUpperCase()}`;
+    const childBatchNumber = `${sourceBatch.batch_number}-split-${Date.now().toString().slice(-4)}`;
 
     const [updatedSource, childBatch] = await db.$transaction([
       // Reduce source batch quantity

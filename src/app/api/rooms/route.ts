@@ -21,9 +21,22 @@ export async function GET(req: NextRequest) {
   try {
     const rooms = await db.room.findMany({
       where: { farm_id: farmId, deleted_at: null },
+      include: {
+        animal_batches: {
+          where: { status: 'ACTIVE', deleted_at: null },
+          select: { quantity: true }
+        }
+      },
       orderBy: { name: "asc" },
     });
-    return NextResponse.json({ data: rooms });
+    
+    const roomsWithOccupancy = rooms.map(room => {
+      const current_occupancy = room.animal_batches.reduce((sum, b) => sum + b.quantity, 0);
+      const { animal_batches, ...roomData } = room;
+      return { ...roomData, current_occupancy };
+    });
+
+    return NextResponse.json({ data: roomsWithOccupancy });
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch rooms" }, { status: 500 });
   }

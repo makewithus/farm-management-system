@@ -108,7 +108,7 @@ export default async function DashboardPage() {
       db.slaughterYield.aggregate({ _avg: { yield_percentage: true }, where: { slaughter_record: { farm_id: farmId, deleted_at: null } } }),
       
       // Phase 5: Accounting Engine
-      db.expense.aggregate({ _sum: { amount: true }, where: { farm_id: farmId, deleted_at: null } }),
+      db.expense.aggregate({ _sum: { amount: true }, where: { farm_id: farmId, deleted_at: null, category: { not: "OPENING_BALANCE" } } }),
       db.feedConsumption.aggregate({ _sum: { cost: true }, where: { farm_id: farmId, deleted_at: null } }),
       db.waterUsage.aggregate({ _sum: { total_cost: true }, where: { farm_id: farmId, deleted_at: null } }),
       db.electricityUsage.aggregate({ _sum: { total_cost: true }, where: { farm_id: farmId, deleted_at: null } }),

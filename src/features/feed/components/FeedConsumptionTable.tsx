@@ -69,11 +69,28 @@ export function FeedConsumptionTable({ keyIndex }: { keyIndex: number }) {
     }),
     columnHelper.accessor("quantity_kg", { 
       header: "Quantity",
-      cell: (info) => <span className="font-medium">{Number(info.getValue()).toFixed(2)} kg</span>
+      cell: (info) => {
+        const isOfflineAuto = info.row.original.isOffline && Number(info.getValue()) === 0;
+        if (isOfflineAuto) {
+          return (
+            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+              Auto — pending sync
+            </span>
+          );
+        }
+        return <span className="font-medium">{Number(info.getValue()).toFixed(2)} kg</span>;
+      }
     }),
     columnHelper.accessor("cost", { 
       header: "Cost",
-      cell: (info) => `₹${Number(info.getValue()).toFixed(2)}`
+      cell: (info) => {
+        const isOfflineAuto = info.row.original.isOffline && Number(info.getValue()) === 0;
+        if (isOfflineAuto) {
+          return <span className="text-amber-600 italic text-xs">Calculated on sync</span>;
+        }
+        return <span>₹{Number(info.getValue()).toFixed(2)}</span>;
+      }
     }),
     columnHelper.accessor("notes", { 
       header: "Notes",

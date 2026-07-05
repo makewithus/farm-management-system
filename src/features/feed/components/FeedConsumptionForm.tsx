@@ -10,7 +10,7 @@ const schema = z.object({
   batch_id: z.string().min(1, "Batch is required"),
   feed_type_id: z.string().min(1, "Feed type is required"),
   date: z.string().min(1, "Date is required"),
-  quantity_kg: z.coerce.number().min(0.01, "Quantity must be > 0"),
+  quantity_kg: z.coerce.number().min(0, "Quantity must be >= 0"),
   cost: z.coerce.number().min(0, "Cost must be >= 0"),
   notes: z.string().optional(),
 });
@@ -175,15 +175,15 @@ export function FeedConsumptionForm({ onSuccess }: { onSuccess: () => void }) {
           {errors.feed_type_id && <p className="text-red-500 text-xs mt-1">{errors.feed_type_id.message as string}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Quantity (kg) <span className="text-red-500">*</span></label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Quantity (kg) <span className="text-xs text-gray-400 font-normal ml-1">(0 = Auto)</span></label>
           <input type="number" step="0.01" {...register("quantity_kg")} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500" />
           {errors.quantity_kg && <p className="text-red-500 text-xs mt-1">{errors.quantity_kg.message as string}</p>}
           {selectedFeedType && <p className="text-xs text-gray-500 mt-1">Available: {getAdjustedStock(selectedFeedType)} kg</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Total Cost <span className="text-red-500">*</span></label>
-          <input type="number" step="0.01" {...register("cost")} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500" readOnly />
-          <p className="text-xs text-gray-500 mt-1">Auto-calculated</p>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Total Cost (₹) <span className="text-xs text-gray-400 font-normal ml-1">(0 = Auto)</span></label>
+          <input type="number" step="0.01" {...register("cost")} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500" />
+          <p className="text-xs text-gray-500 mt-1">Leave 0 to auto-calculate</p>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>

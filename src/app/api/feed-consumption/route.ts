@@ -76,8 +76,8 @@ export async function POST(req: NextRequest) {
 
       // AUTOMATION RULE: Server-side calculation if values are omitted
       if (!quantityToDeduct || quantityToDeduct === 0) {
-        if (!batch.current_stage || batch.current_stage.feed_requirement == null) {
-          throw new Error(`Stage '${batch.current_stage?.stage_name || 'Unknown'}' has no feed requirement defined. Please enter quantity manually or update the stage definition.`);
+        if (!batch.current_stage || batch.current_stage.feed_requirement == null || batch.current_stage.feed_requirement <= 0) {
+          throw new Error(`Stage '${batch.current_stage?.stage_name || 'Unknown'}' has no valid feed requirement defined (must be > 0). Please enter quantity manually or update the stage definition.`);
         }
         // Required Feed = Animal Count × StageDefinition.feed_requirement
         quantityToDeduct = batch.quantity * batch.current_stage.feed_requirement;

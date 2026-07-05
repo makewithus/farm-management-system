@@ -10,8 +10,8 @@ const createFeedConsumptionSchema = z.object({
   batch_id: z.string().min(1, "Batch is required"),
   feed_type_id: z.string().min(1, "Feed type is required"),
   date: z.string().min(1, "Date is required"),
-  quantity_kg: z.coerce.number().min(0.01, "Quantity must be > 0"),
-  cost: z.coerce.number().min(0, "Cost must be >= 0"),
+  quantity_kg: z.coerce.number().min(0, "Quantity must be >= 0").optional().default(0),
+  cost: z.coerce.number().min(0, "Cost must be >= 0").optional().default(0),
   notes: z.string().optional(),
   client_request_id: z.string().uuid().optional(),
 });
@@ -59,7 +59,8 @@ export async function POST(req: NextRequest) {
 
     // Verify batch belongs to farm
     const batch = await db.animalBatch.findFirst({
-      where: { id: parsedData.batch_id, farm_id: farmId, deleted_at: null }
+      where: { id: parsedData.batch_id, farm_id: farmId, deleted_at: null },
+      include: { current_stage: true }
     });
     if (!batch) return NextResponse.json({ error: "Batch not found or unauthorized" }, { status: 400 });
 
@@ -70,8 +71,25 @@ export async function POST(req: NextRequest) {
       });
       if (!feedType) throw new Error("Feed type not found");
 
-      if (feedType.stock_quantity < parsedData.quantity_kg) {
-        throw new Error(`Insufficient stock. Current stock: ${feedType.stock_quantity} kg`);
+      let quantityToDeduct = parsedData.quantity_kg;
+      let calculatedCost = parsedData.cost;
+
+      // AUTOMATION RULE: Server-side calculation if values are omitted
+      if (!quantityToDeduct || quantityToDeduct === 0) {
+        if (!batch.current_stage || batch.current_stage.feed_requirement == null) {
+          throw new Error(`Stage '${batch.current_stage?.stage_name || 'Unknown'}' has no feed requirement defined. Please enter quantity manually or update the stage definition.`);
+        }
+        // Required Feed = Animal Count × StageDefinition.feed_requirement
+        quantityToDeduct = batch.quantity * batch.current_stage.feed_requirement;
+      }
+
+      if (feedType.stock_quantity < quantityToDeduct) {
+        throw new Error(`Insufficient stock. Current stock: ${feedType.stock_quantity} kg, Required: ${quantityToDeduct} kg`);
+      }
+
+      if (!calculatedCost || calculatedCost === 0) {
+        // Total Cost = Feed Required × FeedType.cost_per_kg
+        calculatedCost = quantityToDeduct * feedType.cost_per_kg;
       }
 
       // Create consumption
@@ -81,17 +99,18 @@ export async function POST(req: NextRequest) {
           batch_id: parsedData.batch_id,
           feed_type_id: parsedData.feed_type_id,
           date: new Date(parsedData.date),
-          quantity_kg: parsedData.quantity_kg,
-          cost: parsedData.cost,
+          quantity_kg: quantityToDeduct,
+          cost: calculatedCost,
           notes: parsedData.notes,
           client_request_id: parsedData.client_request_id,
+          sync_status: 'SYNCED',
         }
       });
 
       // Update stock
       await tx.feedType.update({
         where: { id: feedType.id },
-        data: { stock_quantity: feedType.stock_quantity - parsedData.quantity_kg }
+        data: { stock_quantity: feedType.stock_quantity - quantityToDeduct }
       });
 
       return consumption;

@@ -53,9 +53,11 @@ export async function GET(req: NextRequest) {
           // Attribute purchase cost only for the specific animals slaughtered
           totalAllocatedAnimalCost += (record.quantity_slaughtered * record.batch.cost_per_animal);
 
-          // Attribute feed cost proportionally
-          const initialQty = record.batch.initial_quantity > 0 ? record.batch.initial_quantity : 1;
-          const portion = record.quantity_slaughtered / initialQty;
+          // Use batch.quantity as the denominator, not initial_quantity.
+          // After a split, initial_quantity stays at the original value, inflating
+          // the feed cost portion attributed to slaughtered animals from a split batch.
+          const currentQty = record.batch.quantity > 0 ? record.batch.quantity : 1;
+          const portion = record.quantity_slaughtered / currentQty;
           
           const batchFeedCost = record.batch.feedConsumptions.reduce((sum, f) => sum + f.cost, 0);
           totalAllocatedFeedCost += (batchFeedCost * portion);
@@ -88,7 +90,9 @@ export async function GET(req: NextRequest) {
     const batchROI = completedBatches.map(batch => {
       const batchFeedCost = batch.feedConsumptions.reduce((sum, f) => sum + f.cost, 0);
       const batchWaterCost = batch.waterUsages.reduce((sum, w) => sum + w.total_cost, 0);
-      const batchInitialCost = batch.initial_quantity * batch.cost_per_animal; // roughly
+      // Use quantity (current live animals) not initial_quantity for accurate ROI.
+      // initial_quantity becomes stale after batch splits.
+      const batchInitialCost = batch.quantity * batch.cost_per_animal;
       const totalBatchCost = batchFeedCost + batchWaterCost + batchInitialCost;
       
       const batchRevenue = batch.salesInvoiceItems.reduce((sum, s) => sum + s.amount, 0);

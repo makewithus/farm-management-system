@@ -57,10 +57,13 @@ export async function GET(req: NextRequest) {
 
     let proportionalAnimalAndFeedCOGS = 0;
     for (const item of invoiceItems) {
-      if (item.batch && item.batch.initial_quantity > 0) {
-        const initialCost = item.batch.initial_quantity * item.batch.cost_per_animal;
+      // Use batch.quantity (current animals in batch) not initial_quantity.
+      // After a batch split, initial_quantity remains at the original value,
+      // which would overstate the cost basis per animal.
+      if (item.batch && item.batch.quantity > 0) {
+        const currentCost = item.batch.quantity * item.batch.cost_per_animal;
         const batchFeedCost = item.batch.feedConsumptions.reduce((sum, f) => sum + f.cost, 0);
-        const unitCost = (initialCost + batchFeedCost) / item.batch.initial_quantity;
+        const unitCost = (currentCost + batchFeedCost) / item.batch.quantity;
         proportionalAnimalAndFeedCOGS += (item.quantity * unitCost);
       }
     }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useReactTable, getCoreRowModel, flexRender, createColumnHelper, getPaginationRowModel } from "@tanstack/react-table";
 import { toast } from "sonner";
-import { Eye, Trash2, Edit } from "lucide-react";
+import { Eye, Trash2, Edit, ArrowRightLeft } from "lucide-react";
 import Link from "next/link";
 import { ConfirmModal } from "@/features/shared/components/ConfirmModal";
 import { useRBAC } from "@/lib/rbac-client";
@@ -11,6 +11,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
+import { TransferModal } from "./TransferModal";
 
 const columnHelper = createColumnHelper<any>();
 
@@ -19,6 +20,7 @@ export function BatchTable({ keyIndex, onEdit }: { keyIndex: number; onEdit?: (b
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [transferBatch, setTransferBatch] = useState<any | null>(null);
   const { canMutate } = useRBAC();
 
   const fetchBatches = async () => {
@@ -90,12 +92,35 @@ export function BatchTable({ keyIndex, onEdit }: { keyIndex: number; onEdit?: (b
     }),
     columnHelper.accessor("status", { header: "Status" }),
     columnHelper.display({
-      id: "actions",
-      header: "Actions",
+      id: "transfer",
+      header: "Transfer",
       cell: (info) => (
-        <div className="flex items-center gap-2 min-w-[200px]">
-          {info.row.original.status === "ACTIVE" && canMutate && (
-            <button 
+        <div className="w-[140px]">
+          {info.row.original.status === "ACTIVE" && canMutate ? (
+            <button
+              title="Transfer Animals"
+              onClick={() => setTransferBatch(info.row.original)}
+              className="flex items-center gap-1.5 w-full justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 hover:bg-blue-500 hover:text-white border border-blue-200 hover:border-blue-500 rounded-md shadow-sm transition-all duration-200"
+            >
+              <ArrowRightLeft className="w-3 h-3" />
+              Transfer
+            </button>
+          ) : (
+            <div className="flex items-center gap-1.5 w-full justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-100 border border-gray-200 rounded-md shadow-sm cursor-not-allowed" title="This batch cannot be moved because it has already been sold or prepared for slaughter.">
+              <ArrowRightLeft className="w-3 h-3 opacity-50" />
+              Non Transferable
+            </div>
+          )}
+        </div>
+      ),
+    }),
+    columnHelper.display({
+      id: "slaughter_status",
+      header: "Slaughter Status",
+      cell: (info) => (
+        <div className="w-[140px]">
+          {info.row.original.status === "ACTIVE" && canMutate ? (
+            <button
               title="Mark Ready for Slaughter"
               onClick={async () => {
                 try {
@@ -106,32 +131,39 @@ export function BatchTable({ keyIndex, onEdit }: { keyIndex: number; onEdit?: (b
                 } catch (e) {
                   toast.error("Failed to update status");
                 }
-              }} 
-              className="flex items-center gap-1.5 w-[140px] justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-orange-700 bg-orange-50 hover:bg-orange-500 hover:text-white border border-orange-200 hover:border-orange-500 rounded-md shadow-sm transition-all duration-200"
+              }}
+              className="flex items-center gap-1.5 w-full justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-orange-700 bg-orange-50 hover:bg-orange-500 hover:text-white border border-orange-200 hover:border-orange-500 rounded-md shadow-sm transition-all duration-200"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5l10 -10"/></svg>
-              Mark Slaughter Ready
+               Mark
             </button>
-          )}
-          {info.row.original.status === "SLAUGHTER_READY" && (
-            <div className="flex items-center gap-1.5 w-[140px] justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-md shadow-sm cursor-default">
+          ) : info.row.original.status === "SLAUGHTER_READY" ? (
+            <div className="flex items-center gap-1.5 w-full justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-md shadow-sm cursor-default">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
               MARKED
             </div>
+          ) : (
+            <div className="flex items-center gap-1.5 w-full justify-center px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-50 border border-gray-100 rounded-md shadow-sm cursor-not-allowed">
+              N/A
+            </div>
           )}
-          {info.row.original.status !== "ACTIVE" && info.row.original.status !== "SLAUGHTER_READY" && (
-             <div className="w-[140px]"></div>
-          )}
-          
-          <Link href={`/dashboard/animal-batches/${info.row.original.id}`} className="text-blue-500 hover:text-blue-700 p-1.5 transition-colors hover:bg-blue-50 rounded-md">
+        </div>
+      ),
+    }),
+    columnHelper.display({
+      id: "actions",
+      header: "Actions",
+      cell: (info) => (
+        <div className="flex items-center gap-1 justify-start">
+          <Link href={`/dashboard/animal-batches/${info.row.original.id}`} className="text-blue-500 hover:text-blue-700 p-1.5 transition-colors hover:bg-blue-50 rounded-md" title="View Batch">
             <Eye className="w-4 h-4" />
           </Link>
           {canMutate && (
             <>
-              <button onClick={() => onEdit?.(info.row.original)} className="p-1.5 text-gray-400 hover:text-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary)]/10 rounded-md transition-colors">
+              <button onClick={() => onEdit?.(info.row.original)} className="p-1.5 text-gray-400 hover:text-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary)]/10 rounded-md transition-colors" title="Edit Batch">
                 <Edit className="w-4 h-4" />
               </button>
-              <button onClick={() => setDeleteId(info.row.original.id)} className="text-red-500 hover:text-red-700 p-1.5 transition-colors hover:bg-red-50 rounded-md">
+              <button onClick={() => setDeleteId(info.row.original.id)} className="text-red-500 hover:text-red-700 p-1.5 transition-colors hover:bg-red-50 rounded-md" title="Delete Batch">
                 <Trash2 className="w-4 h-4" />
               </button>
             </>
@@ -202,6 +234,13 @@ export function BatchTable({ keyIndex, onEdit }: { keyIndex: number; onEdit?: (b
         onConfirm={confirmDelete}
         onCancel={() => setDeleteId(null)}
       />
+      {transferBatch && (
+        <TransferModal
+          batch={transferBatch}
+          onClose={() => setTransferBatch(null)}
+          onSuccess={() => fetchBatches()}
+        />
+      )}
     </div>
   );
 }

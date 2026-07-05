@@ -270,5 +270,77 @@ export const animalBatchRepository = {
       }
       throw err;
     }
+  },
+
+  transfer: async (id: string, payload: { quantity_to_move: number, destination_room_id: string }, originalBatch: any) => {
+    if (typeof window === 'undefined') throw new Error("Cannot transfer from server");
+    
+    const isFullTransfer = payload.quantity_to_move === originalBatch.quantity;
+    
+    const saveOffline = async () => {
+      if (!db) return { success: false };
+      
+      if (isFullTransfer) {
+        await animalBatchRepository.update(id, { room_id: payload.destination_room_id });
+        return { success: true, offline: true, type: "FULL_TRANSFER" };
+      } else {
+        const newQuantity = originalBatch.quantity - payload.quantity_to_move;
+        
+        // 1. Update parent
+        await animalBatchRepository.update(id, { quantity: newQuantity });
+        
+        // 2. Create child
+        const childPayload = {
+          batch_number: `${originalBatch.batch_number}-split-${Date.now().toString().slice(-4)}`,
+          category_id: originalBatch.category_id,
+          room_id: payload.destination_room_id,
+          current_stage_id: originalBatch.current_stage_id,
+          quantity: payload.quantity_to_move,
+          initial_quantity: payload.quantity_to_move,
+          cost_per_animal: originalBatch.cost_per_animal,
+          arrival_date: originalBatch.arrival_date,
+          expected_sale_date: originalBatch.expected_sale_date,
+          status: "ACTIVE",
+          notes: `SPLIT_FROM:${originalBatch.id}`,
+          farm_id: originalBatch.farm_id
+        };
+        
+        const createResult = await animalBatchRepository.create(childPayload);
+        
+        return { 
+          success: true, 
+          offline: true, 
+          type: "PARTIAL_TRANSFER",
+          childBatch: createResult.data
+        };
+      }
+    };
+
+    if (!navigator.onLine) {
+      return saveOffline();
+    }
+
+    try {
+      const res = await fetch(`/api/animal-batches/${id}/transfer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        let errJson;
+        try { errJson = await res.json(); } catch(e) {}
+        if (errJson) throw errJson;
+        throw new Error("Failed to transfer batch");
+      }
+
+      const result = await res.json();
+      return { success: true, offline: false, ...result };
+    } catch (err: any) {
+      if (err.message === "Failed to fetch" || (err.message && err.message.includes("NetworkError")) || err.name === "TypeError") {
+        return saveOffline();
+      }
+      throw err;
+    }
   }
 };

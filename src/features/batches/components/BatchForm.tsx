@@ -122,10 +122,15 @@ export function BatchForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
       
       if (initialData) {
         await animalBatchRepository.update(initialData.id, payload);
+        if (initialData.room_id !== data.room_id) {
+          toast.success("Animals moved successfully.");
+        } else {
+          toast.success("Batch updated!");
+        }
       } else {
         await animalBatchRepository.create(payload);
+        toast.success("Batch created!");
       }
-      toast.success(initialData ? "Batch updated!" : "Batch created!");
       reset();
       onSuccess();
     } catch (err: any) {
@@ -160,11 +165,18 @@ export function BatchForm({ onSuccess, initialData, onCancel }: { onSuccess: () 
         {/* Room — with capacity info */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Room <span className="text-red-500">*</span></label>
-          <select {...register("room_id")} className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+          <select 
+            {...register("room_id")} 
+            disabled={!!initialData && initialData.status !== "ACTIVE"}
+            className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
+          >
             <option value="">Select room...</option>
             {rooms.map(r => <option key={r.id} value={r.id}>{r.name} (Cap: {r.capacity})</option>)}
           </select>
           {errors.room_id && <p className="text-red-500 text-xs mt-1">{errors.room_id.message as string}</p>}
+          {!!initialData && initialData.status !== "ACTIVE" && (
+            <p className="text-amber-600 text-xs mt-1 font-medium">This batch cannot be moved because it has already been sold or prepared for slaughter.</p>
+          )}
         </div>
 
         {/* Stage — filtered by category AND room's allowed_stages */}

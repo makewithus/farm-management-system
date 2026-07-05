@@ -54,6 +54,10 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
     if (!batch || batch.deleted_at || batch.farm_id !== farmId) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
     if (parsedData.room_id && parsedData.room_id !== batch.room_id) {
+      if (batch.status !== "ACTIVE") {
+        return NextResponse.json({ error: "Only ACTIVE batches can be moved between rooms" }, { status: 400 });
+      }
+      
       const room = await db.room.findUnique({
         where: { id: parsedData.room_id },
         include: { animal_batches: { where: { deleted_at: null, status: "ACTIVE" } } },

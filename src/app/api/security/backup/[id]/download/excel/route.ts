@@ -51,7 +51,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const snapshot = JSON.parse(buffer.toString('utf-8'));
 
     const workbook = new ExcelJS.Workbook();
-    workbook.creator = "Farm ERP Security Backup Engine";
+    workbook.creator = "Harvesta Security Backup Engine";
     workbook.lastModifiedBy = session.user.id;
     workbook.created = new Date();
     workbook.modified = new Date();
@@ -104,7 +104,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, '_');
     const response = new NextResponse(excelBuffer as unknown as BodyInit);
     response.headers.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    response.headers.set('Content-Disposition', `attachment; filename="Farm_Backup_${dateStr}.xlsx"`);
+    response.headers.set('Content-Disposition', `attachment; filename="Harvesta_Backup_${dateStr}.xlsx"`);
     return response;
   } catch (error: any) {
     console.error("Backup Excel download failed", error);

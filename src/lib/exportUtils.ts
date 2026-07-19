@@ -38,7 +38,7 @@ export function generatePdf(title: string, columns: any[], data: any[]): Promise
       const doc = new jsPDF();
       
       doc.setFontSize(20);
-      doc.text('Farm ERP', 14, 22);
+      doc.text('Harvesta Intelligent OS', 14, 22);
       
       doc.setFontSize(14);
       doc.text(title, 14, 32);
@@ -58,7 +58,7 @@ export function generatePdf(title: string, columns: any[], data: any[]): Promise
         head: head,
         body: tableData,
         theme: 'grid',
-        headStyles: { fillColor: [10, 49, 40] },
+        headStyles: { fillColor: [46, 58, 28] },
       });
 
       const arrayBuffer = doc.output('arraybuffer');

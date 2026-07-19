@@ -4,6 +4,7 @@ import { Save, Loader2, Lock, Eye, EyeOff, Users } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
+import { BrandLoader } from "@/features/shared/components/BrandLoader";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -99,7 +100,7 @@ export default function SettingsPage() {
   };
 
   if (isLoading) {
-    return <div className="flex p-10 justify-center"><Loader2 className="animate-spin w-8 h-8 text-gray-400" /></div>;
+    return <BrandLoader label="Loading settings..." />;
   }
 
   const isOwner = session?.user?.role === "Owner";

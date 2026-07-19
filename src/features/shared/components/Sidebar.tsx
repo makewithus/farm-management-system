@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, Grid, Settings, LineChart, FileText, ShoppingCart, Activity, Zap, Droplets, BookOpen, Tractor, Layers, Plus, UserCog, Package, TrendingUp, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Users, Grid, Settings, LineChart, FileText, ShoppingCart, Activity, Zap, Droplets, BookOpen, Sprout, Layers, Plus, UserCog, Package, TrendingUp, ShieldCheck } from 'lucide-react';
 
 export function Sidebar({ isCollapsed = false, userRole = "Worker" }: { isCollapsed?: boolean; userRole?: string }) {
   const pathname = usePathname();
@@ -87,27 +87,31 @@ export function Sidebar({ isCollapsed = false, userRole = "Worker" }: { isCollap
   ];
 
   return (
-    <aside className={`bg-[var(--color-brand-sidebar)] text-gray-300 flex flex-col h-full transition-all duration-300 ${isCollapsed ? 'w-[80px]' : 'w-[260px] hidden md:flex'}`}>
-      <div className={`h-[70px] shrink-0 px-6 flex items-center border-b border-[#0a3128] ${isCollapsed ? 'justify-center px-0' : 'gap-3'}`}>
-        <div className="bg-transparent rounded flex items-center justify-center shrink-0">
-          <Tractor className="text-white w-7 h-7 stroke-[1.5]" />
+    <aside className={`bg-[#F9FAF6] border-r border-[#E3E4D6] text-[#2E3A1C] flex flex-col h-full transition-all duration-300 ${isCollapsed ? 'w-[80px]' : 'w-[260px] hidden md:flex'}`}>
+      <div className={`h-[75px] shrink-0 px-6 flex items-center border-b border-[#E3E4D6] ${isCollapsed ? 'justify-center px-0' : 'gap-3'}`}>
+        <div className="bg-[#2E3A1C] rounded-full w-10 h-10 flex items-center justify-center shrink-0 shadow-sm">
+          <Sprout className="text-[#D7F200] w-[21px] h-[21px]" />
         </div>
-        {!isCollapsed && <span className="text-white text-xl font-bold tracking-wide whitespace-nowrap">Farm ERP</span>}
+        {!isCollapsed && (
+          <span className="text-[#2E3A1C] text-xl font-black tracking-tight whitespace-nowrap">
+            Harvesta
+          </span>
+        )}
       </div>
       
-      <nav className="flex-1 px-3 py-4 space-y-4 overflow-x-hidden overflow-y-auto custom-scrollbar">
+      <nav className="flex-1 px-3 py-3 space-y-3 overflow-x-hidden overflow-y-auto custom-scrollbar">
         {menuGroups.map((group, idx) => {
           const visibleItems = group.items.filter(i => i.show);
           if (visibleItems.length === 0) return null;
           
           return (
-            <div key={idx} className="space-y-1">
+            <div key={idx} className="space-y-0.5">
               {!isCollapsed && (
-                <div className="px-3 mb-1.5 mt-2 text-[10px] font-bold text-[#3a685c] uppercase tracking-wider">
+                <div className="px-2.5 mb-1 mt-1.5 text-[9px] font-black text-[#2E3A1C]/40 uppercase tracking-widest">
                   {group.title}
                 </div>
               )}
-              {isCollapsed && idx !== 0 && <div className="w-8 h-px bg-[#0a3128] mx-auto my-3" />}
+              {isCollapsed && idx !== 0 && <div className="w-8 h-px bg-[#E3E4D6] mx-auto my-2" />}
               
               {visibleItems.map((item) => {
                 const isActive = pathname === item.href;
@@ -116,19 +120,21 @@ export function Sidebar({ isCollapsed = false, userRole = "Worker" }: { isCollap
                     key={item.name}
                     href={item.href}
                     title={isCollapsed ? item.name : undefined}
-                    className={`flex items-center gap-3 px-3 py-1.5 rounded-lg transition-colors group text-[14px] font-medium ${
+                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all duration-150 group text-xs font-bold ${
                       isActive 
-                        ? 'bg-[var(--color-brand-sidebar-active)] text-white' 
-                        : 'hover:bg-[var(--color-brand-sidebar-hover)] hover:text-white'
-                    } ${isCollapsed ? 'justify-center py-2' : ''}`}
+                        ? 'bg-[#2E3A1C] text-white shadow-sm shadow-[#2E3A1C]/15' 
+                        : 'hover:bg-[#2E3A1C]/5 text-[#2E3A1C]/75 hover:text-[#2E3A1C]'
+                    } ${isCollapsed ? 'justify-center py-1.5' : ''}`}
                   >
-                    <item.icon className={`w-[16px] h-[16px] shrink-0 transition-opacity ${isActive ? 'opacity-100 text-[var(--color-brand-primary)]' : 'opacity-70 group-hover:opacity-100'}`} />
+                    <div className={`p-1 rounded-md flex items-center justify-center ${isActive ? 'bg-[#D7F200]/25 text-[#D7F200]' : 'text-[#2E3A1C]/60 group-hover:text-[#2E3A1C]'}`}>
+                      <item.icon className="w-3.5 h-3.5 shrink-0" />
+                    </div>
                     {!isCollapsed && (
                       <>
-                        <span className="whitespace-nowrap">{item.name}</span>
+                        <span className="whitespace-nowrap truncate">{item.name}</span>
                         {isActive && (
-                          <span className="ml-auto text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-[var(--color-brand-primary)]/20 text-[var(--color-brand-primary)]">
-                            Active
+                          <span className="ml-auto text-[8px] uppercase font-black tracking-widest px-1.5 py-0.5 rounded bg-[#D7F200]/20 text-[#D7F200]">
+                            Live
                           </span>
                         )}
                       </>
@@ -141,7 +147,16 @@ export function Sidebar({ isCollapsed = false, userRole = "Worker" }: { isCollap
         })}
       </nav>
       
-
+      {/* Premium user avatar at the bottom */}
+      {!isCollapsed && (
+        <div className="p-3 border-t border-[#E3E4D6] flex items-center gap-3 bg-[#2E3A1C]/5 hover:bg-[#2E3A1C]/10 transition-colors">
+          <div className="w-8 h-8 rounded-full bg-cover bg-center border border-[#E3E4D6] shadow-sm shrink-0" style={{ backgroundImage: "url('/farmer-avatar.png')" }} />
+          <div className="overflow-hidden">
+            <p className="text-xs font-black text-[#2E3A1C] truncate">Jackson Webb</p>
+            <p className="text-[9px] text-gray-500 font-bold uppercase tracking-wider truncate">{userRole}</p>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }

@@ -5,6 +5,7 @@ import { Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { InventoryTable } from "@/features/inventory/components/InventoryTable";
 import { InventoryForm } from "@/features/inventory/components/InventoryForm";
+import { BrandLoader } from "@/features/shared/components/BrandLoader";
 import { toast } from "sonner";
 import { useRBAC } from "@/lib/rbac-client";
 
@@ -62,12 +63,7 @@ export default function InventoryPage() {
 
       {!isCreating && !editingItem && (
         isLoading ? (
-          <div className="flex flex-col items-center justify-center min-h-[40vh] gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-[#FFFFFC] border border-[#E3E4D6] flex items-center justify-center shadow-sm">
-              <Loader2 className="w-6 h-6 text-[#2E3A1C] animate-spin" />
-            </div>
-            <p className="text-xs font-bold text-[#2E3A1C]/70">Loading inventory items...</p>
-          </div>
+          <BrandLoader label="Loading inventory items..." />
         ) : (
           <InventoryTable data={items} onEdit={setEditingItem} onRefresh={fetchItems} canMutate={canMutate} />
         )

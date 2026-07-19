@@ -5,6 +5,7 @@ import { DollarSign, TrendingUp, TrendingDown, Wallet, Box, LineChart, FileText,
 import { toast } from "sonner";
 import Link from "next/link";
 import { format } from "date-fns";
+import { BrandLoader } from "@/features/shared/components/BrandLoader";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell } from "recharts";
 
 export default function AccountsDashboardPage() {
@@ -61,14 +62,7 @@ export default function AccountsDashboardPage() {
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-[#FFFFFC] border border-[#E3E4D6] flex items-center justify-center shadow-sm">
-          <Loader2 className="w-6 h-6 text-[#2E3A1C] animate-spin" />
-        </div>
-        <p className="text-xs font-bold text-[#2E3A1C]/70">Loading accounting metrics...</p>
-      </div>
-    );
+    return <BrandLoader label="Loading accounting metrics..." />;
   }
   if (!data) return <div className="p-6">Data not found.</div>;
 

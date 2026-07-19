@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Urbanist } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
@@ -10,9 +10,16 @@ const inter = Inter({
   display: "swap",
 });
 
+const urbanist = Urbanist({
+  variable: "--font-urbanist",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Farm ERP",
-  description: "Premium Farm Management System",
+  title: "Harvesta | Intelligent OS",
+  description: "Modern commercial scale farm management OS.",
   manifest: "/manifest.json",
 };
 
@@ -45,13 +52,26 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} h-full antialiased`}
+      className={`${inter.variable} ${urbanist.variable} h-full antialiased`}
       data-theme={theme}
     >
       <body className="min-h-full flex flex-col bg-page-bg text-text-body">
         <AuthProvider>
           {children}
-          <Toaster position="top-right" richColors />
+          <Toaster 
+            position="top-right" 
+            richColors 
+            toastOptions={{
+              style: {
+                borderRadius: '8px',
+                border: '1px solid #E3E4D6',
+                fontFamily: 'var(--font-sans)',
+                fontWeight: '600',
+                fontSize: '13px',
+                boxShadow: '0 2px 8px rgba(46, 58, 28, 0.08)',
+              },
+            }}
+          />
         </AuthProvider>
       </body>
     </html>

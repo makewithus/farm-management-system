@@ -1,37 +1,45 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-brand-primary: #00C291;
-  --color-brand-hover: #00A97D;
-  --color-brand-dark: #065F46;
-  --color-brand-sidebar: #06241D;
-  --color-brand-sidebar-hover: #0E3A30;
-  --color-brand-sidebar-active: #124537;
+  --color-brand-primary: #2E3A1C;
+  --color-brand-hover: #3f4f26;
+  --color-brand-dark: #1f2713;
+  --color-brand-sidebar: #2E3A1C;
+  --color-brand-sidebar-hover: #3f4f26;
+  --color-brand-sidebar-active: #1f2713;
   
-  --color-page-bg: #F9FAFB; /* Tailwind gray-50 */
-  --color-card-bg: #FFFFFF;
+  --color-page-bg: #F7F8F3;
+  --color-card-bg: #FFFFFC;
   
-  --color-text-heading: #111827; /* Tailwind gray-900 */
-  --color-text-body: #374151; /* Tailwind gray-700 */
-  --color-text-secondary: #6B7280; /* Tailwind gray-500 */
-  --color-text-disabled: #9CA3AF;
+  --color-text-heading: #2E3A1C;
+  --color-text-body: rgba(46, 58, 28, 0.85);
+  --color-text-secondary: rgba(46, 58, 28, 0.65);
+  --color-text-disabled: rgba(46, 58, 28, 0.35);
   
-  --color-status-success: #10B981; /* Tailwind emerald-500 */
-  --color-status-warning: #F59E0B;
-  --color-status-danger: #EF4444; /* Tailwind red-500 */
+  --color-status-success: #2E3A1C;
+  --color-status-warning: #FFB955;
+  --color-status-danger: #EF4444;
   --color-status-info: #3B82F6;
   --color-status-pending: #8B5CF6;
   
-  --color-border-main: #E5E7EB; /* Tailwind gray-200 */
-  --color-border-divider: #F3F4F6; /* Tailwind gray-100 */
+  --color-border-main: #E3E4D6;
+  --color-border-divider: #E3E4D6;
 
-  --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
+  --color-brand-primary-lime: #D7F200;
+  --color-brand-accent-orange: #FFB955;
+  --color-brand-light-olive: #EDF0C2;
+  --color-brand-warm-gray: #E3E4D6;
+  --color-brand-deep-olive: #2E3A1C;
+  --color-brand-bg: #F7F8F3;
+  --color-brand-white-card: #FFFFFC;
+
+  --font-sans: var(--font-urbanist), var(--font-inter), Arial, Helvetica, sans-serif;
   
-  /* Standardized Premium Enterprise Radii */
-  --radius-card: 12px; /* rounded-xl */
-  --radius-btn: 8px;   /* rounded-lg */
-  --radius-input: 8px; /* rounded-lg */
-  --radius-modal: 16px; /* rounded-2xl */
+  /* Sharp Rectangular Design Geometry */
+  --radius-card: 12px;
+  --radius-btn: 8px;
+  --radius-input: 8px;
+  --radius-modal: 12px;
 }
 
 body {
@@ -77,4 +85,90 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+}
+
+/* ==========================================================================
+   Harvesta Premium B2B Editorial Theme Overrides
+   Instantly styles all tables, inputs, forms, and badges across all pages.
+   ========================================================================== */
+
+/* Headings typography adjustments */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  letter-spacing: -0.02em;
+  color: var(--color-brand-primary);
+  font-weight: 800;
+}
+
+/* Table Style Overrides */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-card-bg);
+}
+
+th {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(46, 58, 28, 0.55);
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--color-border-main);
+  background-color: rgba(46, 58, 28, 0.02);
+}
+
+td {
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--color-brand-primary);
+  border-bottom: 1px solid rgba(227, 228, 214, 0.5);
+  font-weight: 500;
+}
+
+tr {
+  transition: background-color 0.15s ease;
+}
+
+tr:hover td {
+  background-color: rgba(46, 58, 28, 0.035) !important;
+}
+
+/* Form and Input Elements overrides */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="datetime-local"],
+select,
+textarea {
+  border-radius: var(--radius-input) !important;
+  border: 1px solid var(--color-border-main) !important;
+  background-color: var(--color-card-bg) !important;
+  color: var(--color-brand-primary) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 8px 12px !important;
+  transition: all 0.15s ease-in-out !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--color-brand-primary) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(46, 58, 28, 0.12) !important;
+}
+
+/* Force pill badges into sharp modern rectangular badges globally */
+.rounded-full {
+  border-radius: 4px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Page Headers utility styling */
+.page-header-wrapper {
+  border-bottom: 1px solid var(--color-border-main);
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }

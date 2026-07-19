@@ -11,11 +11,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none";
     
     const variants = {
-      primary: "bg-[var(--color-brand-primary)] text-white hover:bg-[var(--color-brand-hover)]",
-      secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200",
-      danger: "bg-status-danger text-white hover:bg-red-600",
-      ghost: "hover:bg-gray-100 text-gray-700",
-      outline: "border border-gray-200 text-gray-700 hover:bg-gray-50",
+      primary: "bg-[var(--color-brand-primary)] text-white hover:bg-[var(--color-brand-hover)] shadow-sm font-semibold",
+      secondary: "bg-[#EDF0C2] text-[#2E3A1C] hover:bg-[#e2e6b0] font-bold border border-[#E3E4D6] shadow-sm",
+      danger: "bg-red-600 text-white hover:bg-red-700 font-bold shadow-sm",
+      ghost: "hover:bg-[#2E3A1C]/5 text-[#2E3A1C] font-semibold",
+      outline: "border border-[#E3E4D6] text-[#2E3A1C] hover:bg-[#FFFFFC] bg-[#FFFFFC] shadow-sm font-semibold",
     };
 
     const sizes = {

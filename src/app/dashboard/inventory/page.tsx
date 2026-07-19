@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { InventoryTable } from "@/features/inventory/components/InventoryTable";
 import { InventoryForm } from "@/features/inventory/components/InventoryForm";
@@ -62,7 +62,12 @@ export default function InventoryPage() {
 
       {!isCreating && !editingItem && (
         isLoading ? (
-          <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div></div>
+          <div className="flex flex-col items-center justify-center min-h-[40vh] gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#FFFFFC] border border-[#E3E4D6] flex items-center justify-center shadow-sm">
+              <Loader2 className="w-6 h-6 text-[#2E3A1C] animate-spin" />
+            </div>
+            <p className="text-xs font-bold text-[#2E3A1C]/70">Loading inventory items...</p>
+          </div>
         ) : (
           <InventoryTable data={items} onEdit={setEditingItem} onRefresh={fetchItems} canMutate={canMutate} />
         )

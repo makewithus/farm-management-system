@@ -26,11 +26,11 @@ export default function SuppliersPage() {
   return (
     <div className="space-y-6 pb-12">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">Suppliers CRM</h1>
+        <h1 className="text-2xl font-extrabold text-[#2E3A1C] tracking-tight">Suppliers CRM</h1>
         {canMutate && !isCreating && !editingSupplier && (
           <button
             onClick={() => setIsCreating(true)}
-            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            className="flex items-center gap-2 bg-[#2E3A1C] hover:bg-[#3f4f26] text-[#FFFFFC] px-4 py-2 rounded-md text-sm font-bold shadow-sm transition-colors cursor-pointer"
           >
             <Plus className="w-4 h-4" /> Add Supplier
           </button>

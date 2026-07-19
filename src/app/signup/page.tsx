@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Tractor, Loader2, Mail, Lock, User, Home, Eye, EyeOff, X } from "lucide-react";
+import { Sprout, Loader2, Mail, Lock, User, Home, Eye, EyeOff, X, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -60,67 +61,96 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex w-full bg-white font-sans">
-      {/* Left side - Branding (Hidden on mobile) */}
-      <div className="hidden lg:flex w-1/2 bg-[var(--color-brand-sidebar)] relative overflow-hidden flex-col">
-        {/* Premium Grid Pattern */}
-        <div 
-          className="absolute inset-0 z-0 opacity-[0.07]" 
-          style={{
-            backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
-            backgroundSize: '48px 48px'
-          }}
-        ></div>
-        {/* Radial fade for the grid to make it look smooth */}
-        <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,transparent_0%,var(--color-brand-sidebar)_100%)]"></div>
+    <div className="min-h-screen flex w-full bg-[#F7F8F3] font-sans antialiased text-[#2E3A1C]">
+      <style>{`
+        input.auth-input-fix,
+        input[type="email"].auth-input-fix,
+        input[type="text"].auth-input-fix {
+          padding-left: 44px !important;
+        }
+        input.auth-input-fix-pass,
+        input[type="password"].auth-input-fix-pass,
+        input[type="text"].auth-input-fix-pass {
+          padding-left: 44px !important;
+          padding-right: 44px !important;
+        }
+      `}</style>
+      {/* Left side - Premium Editorial Image Banner (Hidden on mobile) */}
+      <div className="hidden lg:flex w-[45%] relative overflow-hidden flex-col justify-between p-16">
+        <Image 
+          src="/farm-aerial.png" 
+          alt="Harvesta organic farming"
+          fill
+          priority
+          className="object-cover z-0"
+        />
+        {/* Editorial overlay matching deep olive color variables */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#2E3A1C] via-[#2E3A1C]/90 to-[#2E3A1C]/60"></div>
         
-        <div className="relative z-10 p-12 flex flex-col h-full">
-          <div className="flex items-center gap-3 mb-auto">
-            <div className="bg-brand-primary rounded-lg w-10 h-10 flex items-center justify-center shadow-sm">
-              <Tractor className="text-white w-6 h-6 stroke-[1.5]" />
-            </div>
-            <span className="text-white text-2xl font-semibold tracking-tight">Farm ERP</span>
+        <div className="relative z-20 flex items-center gap-3">
+          <div className="bg-[#FFFFFC]/10 backdrop-blur-md border border-[#FFFFFC]/20 rounded-lg w-10 h-10 flex items-center justify-center">
+            <Sprout className="text-[#D7F200] w-5 h-5" />
           </div>
-          
-          <div className="mb-12">
-            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-              Start Your <br />
-              <span className="text-[var(--color-brand-primary)]">Digital Farm</span>
-            </h1>
-            <p className="text-lg text-gray-400 max-w-md leading-relaxed">
-              Join thousands of modern farmers optimizing their operations, maximizing yield, and reducing mortality rates.
-            </p>
-          </div>
-          
-          <div className="mt-auto">
-            <p className="text-sm text-gray-500">© {new Date().getFullYear()} Farm ERP. All rights reserved.</p>
-          </div>
+          <span className="text-[#FFFFFC] text-xl font-extrabold tracking-tight">Harvesta</span>
+        </div>
+        
+        <div className="relative z-20 my-auto max-w-sm">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#D7F200] bg-[#D7F200]/10 px-2.5 py-1 rounded-md border border-[#D7F200]/20">
+            Get Started
+          </span>
+          <h1 className="text-4xl font-extrabold !text-[#FFFFFC] mt-6 mb-4 leading-[1.15] tracking-tight">
+            Start your digital farm today
+          </h1>
+          <p className="text-sm text-[#EDF0C2]/80 leading-relaxed font-semibold">
+            Join commercial operators globally optimizing feed rates, managing herds, and maximizing crop yield.
+          </p>
+        </div>
+        
+        <div className="relative z-20">
+          <p className="text-[11px] text-[#EDF0C2]/50 font-bold uppercase tracking-wider">
+            © {new Date().getFullYear()} Harvesta Inc.
+          </p>
         </div>
       </div>
 
-      {/* Right side - Signup Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 bg-white relative overflow-y-auto">
-        <Link href="/" className="absolute top-6 right-6 lg:top-8 lg:right-8 p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors z-10">
-          <X className="w-6 h-6" />
+      {/* Right side - Pure clean signup form */}
+      <div className="w-full lg:w-[55%] flex items-center justify-center p-6 sm:p-12 bg-[#F7F8F3] relative overflow-y-auto">
+        <Link href="/" className="absolute top-6 left-6 lg:top-8 lg:left-8 flex items-center gap-2 text-xs font-bold text-[#2E3A1C]/60 hover:text-[#2E3A1C] transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Home
         </Link>
-        <div className="w-full max-w-md space-y-8 py-8">
-          <div className="text-left">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight">Create Account</h2>
-            <p className="text-gray-500 text-sm">Register your farm and become an owner</p>
+        <Link href="/" className="absolute top-6 right-6 lg:top-8 lg:right-8 p-2 text-[#2E3A1C]/40 hover:text-[#2E3A1C] hover:bg-[#FFFFFC] rounded-lg transition-colors z-10">
+          <X className="w-5 h-5" />
+        </Link>
+
+        {/* Structured Form Card */}
+        <div className="w-full max-w-[420px] bg-[#FFFFFC] border border-[#E3E4D6] p-8 sm:p-10 rounded-lg shadow-[0_2px_8px_rgba(86,100,55,0.01)] space-y-8 my-8">
+          {/* Logo marker displayed on mobile */}
+          <div className="flex items-center gap-2 lg:hidden mb-4">
+            <div className="bg-[#2E3A1C] rounded-lg w-8 h-8 flex items-center justify-center">
+              <Sprout className="text-[#D7F200] w-4.5 h-4.5" />
+            </div>
+            <span className="font-extrabold text-base tracking-tight text-[#2E3A1C]">Harvesta</span>
+          </div>
+
+          <div className="text-left space-y-1.5">
+            <h2 className="text-2xl font-extrabold tracking-tight text-[#2E3A1C]">Create Account</h2>
+            <p className="text-xs text-gray-500 font-semibold">Register your farm and access the dashboard.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Farm Name <span className="text-red-500">*</span></label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#2E3A1C]/75 block">
+                Farm Name <span className="text-red-500">*</span>
+              </label>
               <div className="relative">
-                <Home className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Home className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#2E3A1C]/45" />
                 <input
                   type="text"
                   name="farmName"
                   value={formData.farmName}
                   onChange={handleChange}
                   disabled={isPending}
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/20 focus:border-[var(--color-brand-primary)] transition-all disabled:opacity-50 shadow-sm"
+                  className="auth-input-fix w-full pl-11 pr-4 py-2.5 bg-[#FFFFFC] border border-[#E3E4D6] rounded-md text-sm text-[#2E3A1C] placeholder-[#2E3A1C]/30 focus:outline-none focus:ring-1 focus:ring-[#2E3A1C] focus:border-[#2E3A1C] transition-all disabled:opacity-50 font-semibold shadow-sm"
                   placeholder="Green Valley Farms"
                   required
                 />
@@ -128,16 +158,18 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Owner Name <span className="text-red-500">*</span></label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#2E3A1C]/75 block">
+                Owner Name <span className="text-red-500">*</span>
+              </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#2E3A1C]/45" />
                 <input
                   type="text"
                   name="ownerName"
                   value={formData.ownerName}
                   onChange={handleChange}
                   disabled={isPending}
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/20 focus:border-[var(--color-brand-primary)] transition-all disabled:opacity-50 shadow-sm"
+                  className="auth-input-fix w-full pl-11 pr-4 py-2.5 bg-[#FFFFFC] border border-[#E3E4D6] rounded-md text-sm text-[#2E3A1C] placeholder-[#2E3A1C]/30 focus:outline-none focus:ring-1 focus:ring-[#2E3A1C] focus:border-[#2E3A1C] transition-all disabled:opacity-50 font-semibold shadow-sm"
                   placeholder="John Doe"
                   required
                 />
@@ -145,16 +177,18 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Email Address <span className="text-red-500">*</span></label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#2E3A1C]/75 block">
+                Email Address <span className="text-red-500">*</span>
+              </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#2E3A1C]/45" />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   disabled={isPending}
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/20 focus:border-[var(--color-brand-primary)] transition-all disabled:opacity-50 shadow-sm"
+                  className="auth-input-fix w-full pl-11 pr-4 py-2.5 bg-[#FFFFFC] border border-[#E3E4D6] rounded-md text-sm text-[#2E3A1C] placeholder-[#2E3A1C]/30 focus:outline-none focus:ring-1 focus:ring-[#2E3A1C] focus:border-[#2E3A1C] transition-all disabled:opacity-50 font-semibold shadow-sm"
                   placeholder="name@company.com"
                   required
                 />
@@ -162,49 +196,53 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Password <span className="text-red-500">*</span></label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#2E3A1C]/75 block">
+                Password <span className="text-red-500">*</span>
+              </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#2E3A1C]/45" />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
                   disabled={isPending}
-                  className="w-full pl-10 pr-12 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/20 focus:border-[var(--color-brand-primary)] transition-all disabled:opacity-50 shadow-sm"
+                  className="auth-input-fix-pass w-full pl-11 pr-12 py-2.5 bg-[#FFFFFC] border border-[#E3E4D6] rounded-md text-sm text-[#2E3A1C] placeholder-[#2E3A1C]/30 focus:outline-none focus:ring-1 focus:ring-[#2E3A1C] focus:border-[#2E3A1C] transition-all disabled:opacity-50 font-semibold shadow-sm"
                   placeholder="••••••••"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#2E3A1C]/40 hover:text-[#2E3A1C] focus:outline-none"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
                 </button>
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Confirm Password <span className="text-red-500">*</span></label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#2E3A1C]/75 block">
+                Confirm Password <span className="text-red-500">*</span>
+              </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#2E3A1C]/45" />
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   disabled={isPending}
-                  className="w-full pl-10 pr-12 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/20 focus:border-[var(--color-brand-primary)] transition-all disabled:opacity-50 shadow-sm"
+                  className="auth-input-fix-pass w-full pl-11 pr-12 py-2.5 bg-[#FFFFFC] border border-[#E3E4D6] rounded-md text-sm text-[#2E3A1C] placeholder-[#2E3A1C]/30 focus:outline-none focus:ring-1 focus:ring-[#2E3A1C] focus:border-[#2E3A1C] transition-all disabled:opacity-50 font-semibold shadow-sm"
                   placeholder="••••••••"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#2E3A1C]/40 hover:text-[#2E3A1C] focus:outline-none"
                 >
-                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showConfirmPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
                 </button>
               </div>
             </div>
@@ -212,11 +250,11 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full py-3 bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-hover)] text-white rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-70 shadow-sm mt-6"
+              className="w-full py-3 bg-[#2E3A1C] hover:bg-[#3f4f26] text-[#FFFFFC] rounded-md font-bold text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-70 mt-6 shadow-sm"
             >
               {isPending ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-4.5 h-4.5 animate-spin" />
                   Creating Account...
                 </>
               ) : (
@@ -225,9 +263,12 @@ export default function SignupPage() {
             </button>
           </form>
 
-          <div className="text-center pt-6">
-            <p className="text-sm text-gray-500">
-              Already have an account? <Link href="/login" className="font-semibold text-[var(--color-brand-primary)] hover:text-[var(--color-brand-hover)]">Sign In</Link>
+          <div className="text-center pt-2">
+            <p className="text-xs text-gray-500 font-semibold">
+              Already have an account?{" "}
+              <Link href="/login" className="font-bold text-[#2E3A1C] hover:underline">
+                Sign In
+              </Link>
             </p>
           </div>
         </div>

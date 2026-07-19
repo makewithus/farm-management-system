@@ -55,7 +55,7 @@ export default function LoginPage() {
         }
       `}</style>
       {/* Left side - Premium Editorial Image Banner (Hidden on mobile) */}
-      <div className="hidden lg:flex w-[45%] relative overflow-hidden flex-col justify-between p-16">
+      <div className="hidden lg:flex w-[45%] relative overflow-hidden flex-col justify-between p-12 lg:p-16">
         <Image 
           src="/farm-aerial.png" 
           alt="Harvesta organic farming"
@@ -64,13 +64,13 @@ export default function LoginPage() {
           className="object-cover z-0"
         />
         {/* Editorial overlay matching deep olive color variables */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#2E3A1C] via-[#2E3A1C]/90 to-[#2E3A1C]/60"></div>
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#2E3A1C] via-[#2E3A1C]/75 to-[#2E3A1C]/40"></div>
         
         <div className="relative z-20 flex items-center gap-3">
-          <div className="bg-[#FFFFFC]/10 backdrop-blur-md border border-[#FFFFFC]/20 rounded-lg w-10 h-10 flex items-center justify-center">
+          <div className="bg-[#2E3A1C]/80 backdrop-blur-md border border-[#FFFFFC]/20 rounded-xl w-10 h-10 flex items-center justify-center shadow-md">
             <Sprout className="text-[#D7F200] w-5 h-5" />
           </div>
-          <span className="text-[#FFFFFC] text-xl font-extrabold tracking-tight">Harvesta</span>
+          <span className="text-[#FFFFFC] text-xl font-black tracking-tight">Harvesta</span>
         </div>
         
         <div className="relative z-20 my-auto max-w-sm">

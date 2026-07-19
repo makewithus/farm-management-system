@@ -1,5 +1,5 @@
 import { OverviewAnalytics } from "@/features/dashboard/components/OverviewAnalytics";
-import { ArrowUpRight, ArrowDownRight, Droplets, Zap, Activity, Users, FileText, IndianRupee, Layers, ShieldPlus, Cloud, Sun, Leaf, TrendingUp, Package, Wallet } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Droplets, Zap, Activity, Users, FileText, IndianRupee, Layers, ShieldPlus, Cloud, Sun, Leaf, TrendingUp, Package, Wallet, Sprout } from "lucide-react";
 import { db } from "@/lib/db";
 import { auth } from "@/auth";
 import { GET as getAccountingDashboard } from "@/app/api/accounting/dashboard/route";
@@ -286,149 +286,178 @@ export default async function DashboardPage() {
       )}
 
       {/* Dashboard Top Header (Weather & Ready Actions) */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between bg-white p-5 rounded-xl border border-gray-200 shadow-sm mb-6 gap-4">
-        <div>
-          <h1 className="text-xl font-bold text-gray-900 tracking-tight">Farm Overview</h1>
-          <p className="text-sm text-gray-500 mt-1">Live metrics and operational data</p>
+      <div className="relative overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between bg-white p-5 rounded-2xl border border-[#E3E4D6] shadow-[0_1px_3px_rgba(0,0,0,0.02)] mb-6 gap-4">
+        {/* Subtle Farm UI Watermark */}
+        <div className="absolute right-0 top-0 bottom-0 opacity-[0.025] pointer-events-none flex items-center justify-end pr-8 select-none">
+          <Sprout className="w-40 h-40 text-[#2E3A1C]" />
+        </div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-3">
+            <div className="bg-[#2E3A1C] rounded-xl p-2 flex items-center justify-center shadow-sm">
+              <Sprout className="w-5 h-5 text-[#D7F200]" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-[#2E3A1C] tracking-tight">
+                Farm Overview
+              </h1>
+              <p className="text-xs text-gray-500 font-bold mt-0.5">Live metrics and operational data</p>
+            </div>
+          </div>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           {/* Ready for Sale */}
-          <div className="flex items-center gap-3 bg-emerald-50 py-2 px-4 rounded-lg border border-emerald-100">
-            <ArrowUpRight className="w-5 h-5 text-emerald-600" />
+          <div className="flex items-center gap-3 bg-emerald-50 py-2.5 px-4 rounded-xl border border-emerald-100 shadow-sm">
+            <ArrowUpRight className="w-5 h-5 text-emerald-700 font-extrabold" />
             <div>
               <div className="flex items-center gap-2">
-                <p className="text-sm font-bold text-emerald-900 leading-tight">{batchesReadyForSale} {batchesReadyForSale === 1 ? 'Batch' : 'Batches'} for Sale</p>
-                {batchesReadyForSale > 0 && <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>}
+                <p className="text-xs font-black text-emerald-950 leading-tight">{batchesReadyForSale} {batchesReadyForSale === 1 ? 'Batch' : 'Batches'} for Sale</p>
+                {batchesReadyForSale > 0 && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 animate-pulse"></span>}
               </div>
-              <p className="text-xs text-emerald-700">{animalsReadyForSale.toLocaleString()} Animals • {nextSaleSub}</p>
+              <p className="text-[10px] text-emerald-700 font-bold mt-0.5">{animalsReadyForSale.toLocaleString()} Animals • {nextSaleSub}</p>
             </div>
           </div>
           {/* Ready for Slaughter */}
-          <div className="flex items-center gap-3 bg-amber-50 py-2 px-4 rounded-lg border border-amber-100">
-            <ArrowDownRight className="w-5 h-5 text-amber-600" />
+          <div className="flex items-center gap-3 bg-amber-50 py-2.5 px-4 rounded-xl border border-amber-100 shadow-sm">
+            <ArrowDownRight className="w-5 h-5 text-amber-700 font-extrabold" />
             <div>
               <div className="flex items-center gap-2">
-                <p className="text-sm font-bold text-amber-900 leading-tight">{batchesReadyForSlaughter} {batchesReadyForSlaughter === 1 ? 'Batch' : 'Batches'} for Slaughter</p>
-                {batchesReadyForSlaughter > 0 && <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>}
+                <p className="text-xs font-black text-amber-950 leading-tight">{batchesReadyForSlaughter} {batchesReadyForSlaughter === 1 ? 'Batch' : 'Batches'} for Slaughter</p>
+                {batchesReadyForSlaughter > 0 && <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>}
               </div>
-              <p className="text-xs text-amber-700">{animalsReadyForSlaughter.toLocaleString()} Animals • {nextSlaughterSub}</p>
+              <p className="text-[10px] text-amber-700 font-bold mt-0.5">{animalsReadyForSlaughter.toLocaleString()} Animals • {nextSlaughterSub}</p>
             </div>
           </div>
           {/* Weather */}
-          <div className="flex items-center gap-3 bg-gray-50 py-2 px-4 rounded-lg border border-gray-200">
+          <div className="flex items-center gap-3 bg-[#FFFFFC] py-2.5 px-4 rounded-xl border border-[#E3E4D6] shadow-sm">
             <weatherMetric.icon className={`w-5 h-5 ${weatherMetric.color}`} />
             <div>
-              <p className="text-sm font-bold text-gray-900 leading-tight">{weatherMetric.value}</p>
-              <p className="text-xs text-gray-500">{weatherMetric.sub}</p>
+              <p className="text-xs font-black text-[#2E3A1C] leading-tight">{weatherMetric.value}</p>
+              <p className="text-[10px] text-gray-500 font-bold mt-0.5">{weatherMetric.sub}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Financials */}
-      <div className="mb-8">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-1">Financial Performance</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {financialMetrics.map((kpi, idx) => (
-            <div key={`fin-${idx}`} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group">
-              <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-lg ${kpi.bg} group-hover:scale-110 transition-transform`}>
-                  <kpi.icon className={`w-5 h-5 ${kpi.color}`} />
+      {/* Metrics Section: Clean Horizontal Grids */}
+      <div className="space-y-6 mb-8">
+        {/* Financials Row */}
+        <div>
+          <div className="flex items-center gap-2 mb-2 px-1">
+            <div className="w-1.5 h-3 bg-emerald-600 rounded-full"></div>
+            <h3 className="text-[11px] font-black text-[#2E3A1C] uppercase tracking-wider">Financial Performance</h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5">
+            {financialMetrics.map((kpi, idx) => (
+              <div key={`fin-${idx}`} className="bg-white border border-[#E3E4D6] rounded-xl p-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-[#2E3A1C]/30 hover:shadow-sm transition-all duration-200 flex flex-col justify-between h-[92px] group">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-gray-500 font-extrabold uppercase tracking-wider truncate">{kpi.label}</span>
+                  <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-100 group-hover:scale-105 transition-transform shrink-0">
+                    <kpi.icon className="w-3.5 h-3.5 text-emerald-700" />
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-medium mb-1">{kpi.label}</p>
-                  <p className="text-xl font-bold text-gray-900 leading-none">{kpi.value}</p>
-                  {kpi.sub && <p className="text-[11px] text-gray-400 mt-1.5 font-medium tracking-wide">{kpi.sub}</p>}
+                <div className="mt-1">
+                  <p className="text-base font-black text-[#2E3A1C] leading-none tracking-tight">{kpi.value}</p>
+                  <p className="text-[9px] text-gray-400 font-bold mt-1.5 leading-none">{kpi.sub}</p>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Operations */}
-      <div className="mb-8">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-1">Operations & Livestock</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {operationalMetrics.map((kpi, idx) => (
-            <div key={`ops-${idx}`} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group">
-              <div className="flex items-start gap-4 w-full">
-                <div className={`p-3 rounded-lg ${kpi.bg} group-hover:scale-110 transition-transform shrink-0`}>
-                  <kpi.icon className={`w-5 h-5 ${kpi.color}`} />
+        {/* Operations Row */}
+        <div>
+          <div className="flex items-center gap-2 mb-2 px-1">
+            <div className="w-1.5 h-3 bg-[#2E3A1C] rounded-full"></div>
+            <h3 className="text-[11px] font-black text-[#2E3A1C] uppercase tracking-wider">Operations & Livestock</h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            {operationalMetrics.map((kpi, idx) => (
+              <div key={`ops-${idx}`} className="bg-white border border-[#E3E4D6] rounded-xl p-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-[#2E3A1C]/30 hover:shadow-sm transition-all duration-200 flex flex-col justify-between h-[92px] group">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-gray-500 font-extrabold uppercase tracking-wider truncate">{kpi.label}</span>
+                  <div className="p-1.5 rounded-lg bg-[#2E3A1C]/5 text-[#2E3A1C] border border-[#2E3A1C]/10 group-hover:scale-105 transition-transform shrink-0">
+                    <kpi.icon className="w-3.5 h-3.5 text-[#2E3A1C]" />
+                  </div>
                 </div>
-                <div className="flex-1 w-full">
-                  <div className="flex justify-between items-start w-full">
-                    <p className="text-sm text-gray-500 font-medium mb-1">{kpi.label}</p>
+                <div className="mt-1 flex items-end justify-between">
+                  <div>
+                    <p className="text-base font-black text-[#2E3A1C] leading-none tracking-tight">{kpi.value}</p>
+                    <p className="text-[9px] text-gray-400 font-bold mt-1.5 leading-none">{kpi.sub}</p>
                   </div>
-                  <div className="flex items-baseline gap-2">
-                    <p className="text-xl font-bold text-gray-900 leading-none">{kpi.value}</p>
-                    {kpi.trend && <span className={`text-xs font-bold ${kpi.trend.startsWith('+') ? 'text-emerald-600' : kpi.trend.startsWith('-') ? 'text-red-600' : 'text-gray-400'}`}>{kpi.trend}</span>}
-                  </div>
-                  {kpi.sub && <p className="text-[11px] text-gray-400 mt-1 font-medium tracking-wide">{kpi.sub}</p>}
+                  {kpi.trend && (
+                    <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-100">{kpi.trend}</span>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Resources */}
-      <div className="mb-8">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-1">Resources & Consumption</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {resourceMetrics.map((kpi, idx) => (
-            <div key={`res-${idx}`} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group">
-              <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-lg ${kpi.bg} group-hover:scale-110 transition-transform`}>
-                  <kpi.icon className={`w-5 h-5 ${kpi.color}`} />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-medium mb-1">{kpi.label}</p>
-                  <div className="flex items-baseline gap-2">
-                    <p className="text-xl font-bold text-gray-900 leading-none">{kpi.value}</p>
-                    {kpi.trend && <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${kpi.trend === 'Stock OK' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>{kpi.trend}</span>}
+        {/* Resources Row */}
+        <div>
+          <div className="flex items-center gap-2 mb-2 px-1">
+            <div className="w-1.5 h-3 bg-blue-600 rounded-full"></div>
+            <h3 className="text-[11px] font-black text-[#2E3A1C] uppercase tracking-wider">Resources & Consumption</h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            {resourceMetrics.map((kpi, idx) => (
+              <div key={`res-${idx}`} className="bg-white border border-[#E3E4D6] rounded-xl p-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-[#2E3A1C]/30 hover:shadow-sm transition-all duration-200 flex flex-col justify-between h-[92px] group">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-gray-500 font-extrabold uppercase tracking-wider truncate">{kpi.label}</span>
+                  <div className="p-1.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-100 group-hover:scale-105 transition-transform shrink-0">
+                    <kpi.icon className="w-3.5 h-3.5 text-blue-700" />
                   </div>
-                  {kpi.sub && <p className="text-[11px] text-gray-400 mt-1.5 font-medium tracking-wide">{kpi.sub}</p>}
+                </div>
+                <div className="mt-1 flex items-end justify-between">
+                  <div>
+                    <p className="text-base font-black text-[#2E3A1C] leading-none tracking-tight">{kpi.value}</p>
+                    <p className="text-[9px] text-gray-400 font-bold mt-1.5 leading-none">{kpi.sub}</p>
+                  </div>
+                  {kpi.trend && (
+                    <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-100">{kpi.trend}</span>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Processing & Inventory */}
-      <div className="mb-8">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-1">Processing & Inventory</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {processingMetrics.map((kpi, idx) => (
-            <div key={`proc-${idx}`} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group">
-              <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-lg ${kpi.bg} group-hover:scale-110 transition-transform`}>
-                  <kpi.icon className={`w-5 h-5 ${kpi.color}`} />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-medium mb-1">{kpi.label}</p>
-                  <div className="flex items-baseline gap-2">
-                    <p className="text-xl font-bold text-gray-900 leading-none">{kpi.value}</p>
+        {/* Processing Row */}
+        <div>
+          <div className="flex items-center gap-2 mb-2 px-1">
+            <div className="w-1.5 h-3 bg-purple-600 rounded-full"></div>
+            <h3 className="text-[11px] font-black text-[#2E3A1C] uppercase tracking-wider">Processing & Inventory</h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            {processingMetrics.map((kpi, idx) => (
+              <div key={`proc-${idx}`} className="bg-white border border-[#E3E4D6] rounded-xl p-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-[#2E3A1C]/30 hover:shadow-sm transition-all duration-200 flex flex-col justify-between h-[92px] group">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-gray-500 font-extrabold uppercase tracking-wider truncate">{kpi.label}</span>
+                  <div className="p-1.5 rounded-lg bg-purple-50 text-purple-800 border border-purple-100 group-hover:scale-105 transition-transform shrink-0">
+                    <kpi.icon className="w-3.5 h-3.5 text-purple-700" />
                   </div>
-                  {kpi.sub && <p className="text-[11px] text-gray-400 mt-1.5 font-medium tracking-wide">{kpi.sub}</p>}
+                </div>
+                <div className="mt-1">
+                  <p className="text-base font-black text-[#2E3A1C] leading-none tracking-tight">{kpi.value}</p>
+                  <p className="text-[9px] text-gray-400 font-bold mt-1.5 leading-none">{kpi.sub}</p>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Left Column: Animals */}
         <div className="xl:col-span-2 space-y-6">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+          {/* Animals Inventory */}
+          <div className="bg-white rounded-2xl border border-[#DCE0CC] shadow-sm p-5">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
-                <Users className="w-5 h-5 text-brand-primary" /> Animals Inventory
+              <h2 className="text-base font-extrabold text-[#2E3A1C] flex items-center gap-2">
+                <Users className="w-5 h-5 text-[#2E3A1C]" /> Animals Inventory
               </h2>
               <div className="flex items-center gap-2">
-                <button className="text-xs font-medium text-gray-600 hover:text-brand-primary bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg transition-colors">
+                <button className="text-xs font-bold text-[#2E3A1C] hover:bg-[#2E3A1C]/10 bg-white border border-[#DCE0CC] px-3 py-1.5 rounded-xl transition-all cursor-pointer">
                   Filter
                 </button>
               </div>
@@ -456,22 +485,22 @@ export default async function DashboardPage() {
                   const recentMorts = allMortalities.filter((m: any) => m.batch?.animal_category_id === cat.id && new Date(m.date) >= sevenDaysAgo);
                   const healthNotes = recentMorts.length > 0 ? `${recentMorts.length} Recent Mortalities` : "No Active Alerts";
                   return (
-                    <div key={cat.id} className="relative group border border-gray-200 rounded-xl p-5 hover:border-brand-primary/30 transition-colors bg-white">
+                    <div key={cat.id} className="relative group border border-[#DCE0CC] rounded-xl p-5 hover:border-[#2E3A1C]/50 transition-all bg-[#FDFDFB] shadow-sm hover:shadow-md">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-lg">
+                          <div className="w-10 h-10 rounded-xl bg-[#F4F5ED] border border-[#DCE0CC] flex items-center justify-center text-lg shadow-inner">
                             🐾
                           </div>
-                          <span className="font-semibold text-gray-900">{cat.name}</span>
+                          <span className="font-extrabold text-[#2E3A1C]">{cat.name}</span>
                         </div>
-                        <span className="text-xl font-bold text-gray-900">{total.toLocaleString()}</span>
+                        <span className="text-xl font-black text-[#2E3A1C]">{total.toLocaleString()}</span>
                       </div>
-                      <div className="flex items-center gap-4 text-xs font-medium text-gray-500">
-                        <span className="flex items-center gap-1.5">
-                          <div className="w-2 h-2 rounded-full bg-brand-primary"></div> {cat.animal_batches.length} Batches
+                      <div className="flex flex-wrap gap-2 text-xs font-bold text-gray-500">
+                        <span className="flex items-center gap-1 bg-[#2E3A1C]/5 px-2 py-0.5 rounded-md text-[#2E3A1C] text-[10px]">
+                          {cat.animal_batches.length} Batches
                         </span>
-                        <span className="flex items-center gap-1.5">
-                          <div className="w-2 h-2 rounded-full bg-red-500"></div> {cat.mortality_percentage}% Max Mort.
+                        <span className="flex items-center gap-1 bg-red-50 px-2 py-0.5 rounded-md text-red-700 text-[10px]">
+                          {cat.mortality_percentage}% Max Mort.
                         </span>
                       </div>
                       {/* Hover popup — only data already in scope */}
@@ -485,7 +514,6 @@ export default async function DashboardPage() {
                           <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Vaccinations</span><span className={`font-medium text-right truncate ${catVaccinations.length === 0 ? 'text-emerald-400' : overdueCount > 0 ? 'text-red-400' : 'text-amber-400'}`}>{vaxStatus}</span></div>
                           <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Health Notes</span><span className={`font-medium text-right truncate ${recentMorts.length > 0 ? 'text-red-400' : 'text-emerald-400'}`}>{healthNotes}</span></div>
                           <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Feed Plan</span><span className={`font-medium text-right truncate ${feedPlans.length > 0 ? 'text-gray-200' : 'text-gray-500 italic'}`}>{feedPlanStatus}</span></div>
-                          <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Exp. Sale Value</span><span className="font-medium text-right truncate text-gray-500 italic">Not Available</span></div>
                           <div className="flex justify-between gap-2"><span className="text-gray-400 shrink-0">Risk Index</span><span className="font-medium text-right truncate">{cat.mortality_percentage}% Max Mort.</span></div>
                         </div>
                         <div className="absolute -bottom-1.5 left-5 w-3 h-3 bg-gray-900 rotate-45"></div>
@@ -498,10 +526,10 @@ export default async function DashboardPage() {
           </div>
           
           {/* Analytics Widgets */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+          <div className="bg-white rounded-2xl border border-[#DCE0CC] shadow-sm p-5">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-base font-bold text-gray-900">Overview Analytics</h2>
-              <button className="text-xs font-medium text-gray-600 hover:text-brand-primary bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg transition-colors">
+              <h2 className="text-base font-extrabold text-[#2E3A1C]">Overview Analytics</h2>
+              <button className="text-xs font-bold text-[#2E3A1C] hover:bg-[#2E3A1C]/10 bg-white border border-[#DCE0CC] px-3 py-1.5 rounded-xl transition-all cursor-pointer">
                 Show More
               </button>
             </div>
@@ -515,79 +543,79 @@ export default async function DashboardPage() {
 
         {/* Right Column: Live Report & Activity Feed */}
         <div className="xl:col-span-1 space-y-6">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 h-full">
+          <div className="bg-white rounded-2xl border border-[#DCE0CC] shadow-sm p-5 h-full">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
-                <Activity className="w-5 h-5 text-brand-primary" /> Live Report
+              <h2 className="text-base font-extrabold text-[#2E3A1C] flex items-center gap-2">
+                <Activity className="w-5 h-5 text-[#2E3A1C]" /> Live Report
               </h2>
             </div>
             
-            <div className="bg-brand-primary rounded-xl p-6 text-white mb-6 shadow-sm">
-              <p className="text-white/90 text-sm font-medium mb-2">Total System Capacity</p>
-              <div className="flex items-end gap-3 mb-5">
-                <h3 className="text-4xl font-bold tracking-tight">{totalAnimals.toLocaleString()}</h3>
-                <span className="text-xs font-medium bg-white/20 px-2.5 py-1 rounded-full mb-1">Active</span>
+            <div className="bg-[#2E3A1C] rounded-2xl p-6 text-white mb-6 shadow-sm border border-[#2E3A1C]">
+              <p className="!text-[#FFFFFC]/80 uppercase tracking-widest text-[9px] font-bold">Total System Capacity</p>
+              <div className="flex items-end gap-3 mb-3">
+                <h3 className="text-5xl font-black !text-[#D7F200] tracking-tight">{totalAnimals.toLocaleString()}</h3>
+                <span className="text-[10px] font-bold bg-white/15 !text-[#FFFFFC] px-2.5 py-0.5 rounded-md mb-1.5 border border-white/10">Active</span>
               </div>
-              <div className="flex items-center justify-between text-sm border-t border-white/20 pt-4 font-medium">
-                <span>Mortality Rate</span>
-                <span>{totalAnimals > 0 ? ((totalMortality / totalAnimals) * 100).toFixed(1) : '0.0'}%</span>
+              <div className="w-full bg-[#FFFFFC]/10 h-1.5 rounded-full overflow-hidden mb-4 border border-[#FFFFFC]/5">
+                <div className="bg-[#D7F200] h-full" style={{ width: '65%' }}></div>
+              </div>
+              <div className="flex items-center justify-between text-xs border-t border-[#FFFFFC]/10 pt-4 font-bold">
+                <span className="!text-[#FFFFFC]/80">Mortality Rate</span>
+                <span className="!text-[#D7F200]">{totalAnimals > 0 ? ((totalMortality / totalAnimals) * 100).toFixed(1) : '0.0'}%</span>
               </div>
             </div>
 
             <div className="space-y-4 mb-8">
-              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2">Upcoming Tasks</h4>
+              <h4 className="text-xs font-bold !text-[#2E3A1C]/75 uppercase tracking-widest border-b border-[#E3E4D6] pb-2">Upcoming Tasks</h4>
               
-              <div className="flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-gray-50">
+              <div className="flex items-center justify-between p-4 rounded-xl border border-red-100 bg-red-50/60">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-red-100 text-red-600">
+                  <div className="p-2 rounded-lg bg-red-100 text-red-600 shadow-inner">
                     <ShieldPlus className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-gray-900">Overdue Vaccinations</p>
-                    <p className="text-xs text-gray-500 mt-0.5">Requires immediate action</p>
+                    <p className="text-xs font-bold text-[#2E3A1C]">Overdue Vaccinations</p>
+                    <p className="text-[10px] text-red-800/80 mt-0.5 font-semibold">Requires immediate action</p>
                   </div>
                 </div>
-                <span className="font-bold text-red-600">{overdueVaccinationsCount}</span>
+                <span className="font-extrabold text-sm text-red-700 bg-red-100 px-2.5 py-1 rounded-md">{overdueVaccinationsCount}</span>
               </div>
 
-              <div className="flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-gray-50">
+              <div className="flex items-center justify-between p-4 rounded-xl border border-amber-100 bg-amber-50/60">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-amber-100 text-amber-600">
+                  <div className="p-2 rounded-lg bg-amber-100 text-amber-700 shadow-inner">
                     <ShieldPlus className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-gray-900">Pending Vaccinations</p>
-                    <p className="text-xs text-gray-500 mt-0.5">Upcoming schedule</p>
+                    <p className="text-xs font-bold text-[#2E3A1C]">Pending Vaccinations</p>
+                    <p className="text-[10px] text-amber-800/80 mt-0.5 font-semibold">Upcoming schedule</p>
                   </div>
                 </div>
-                <span className="font-bold text-gray-900">{upcomingVaccinationsCount}</span>
+                <span className="font-extrabold text-sm text-[#2E3A1C] bg-amber-100 px-2.5 py-1 rounded-md">{upcomingVaccinationsCount}</span>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2">Recent Activity</h4>
+              <h4 className="text-xs font-bold !text-[#2E3A1C]/75 uppercase tracking-widest border-b border-[#E3E4D6] pb-2">Recent Activity</h4>
               
-              <div className="space-y-3">
+              <div className="relative border-l border-[#E3E4D6] ml-3.5 pl-5 space-y-5 py-2">
                 {auditLogs.length === 0 ? (
-                  <div className="text-sm text-gray-500 text-center py-6">No recent activity</div>
+                  <div className="text-sm text-gray-500 py-2 font-semibold">No recent activity</div>
                 ) : (
                   auditLogs.map((log) => (
-                    <div key={log.id} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 bg-white hover:border-gray-200 transition-colors">
-                      <div className={`p-2 rounded-lg shrink-0 ${
-                        log.action === 'CREATE' ? 'bg-emerald-100 text-emerald-600' :
-                        log.action === 'UPDATE' ? 'bg-blue-100 text-blue-600' :
-                        'bg-red-100 text-red-600'
-                      }`}>
-                        <Activity className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900 leading-tight">
-                          {log.user?.name || "User"} {log.action.toLowerCase()}d {log.entity}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1 font-medium">
-                          {new Date(log.timestamp).toLocaleString()}
-                        </p>
-                      </div>
+                    <div key={log.id} className="relative text-xs">
+                      {/* Timeline node */}
+                      <div className={`absolute -left-[25.5px] top-1 w-2.5 h-2.5 rounded-full border-2 border-white ${
+                        log.action === 'CREATE' ? 'bg-emerald-500' :
+                        log.action === 'UPDATE' ? 'bg-blue-500' :
+                        'bg-red-500'
+                      }`} />
+                      <p className="font-bold text-[#2E3A1C] leading-tight">
+                        {log.user?.name || "System"} <span className="text-[#2E3A1C]/60 font-semibold">{log.action.toLowerCase()}d</span> <span className="font-extrabold text-[#2E3A1C]/85">{log.entity}</span>
+                      </p>
+                      <p className="text-[10px] text-[#2E3A1C]/50 font-bold mt-0.5">
+                        {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {new Date(log.timestamp).toLocaleDateString()}
+                      </p>
                     </div>
                   ))
                 )}

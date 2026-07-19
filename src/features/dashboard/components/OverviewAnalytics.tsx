@@ -26,7 +26,7 @@ export function OverviewAnalytics({ categories = [], mortalities = [], vaccinati
     })).filter(cat => cat.value > 0);
   }, [categories]);
 
-  const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ef4444'];
+  const COLORS = ['#2E3A1C', '#D7F200', '#FFB955', '#EDF0C2', '#8b5cf6'];
 
   // 2. Mortality Trend (Line Chart over last 7 days)
   const mortalityData = useMemo(() => {
@@ -78,8 +78,8 @@ export function OverviewAnalytics({ categories = [], mortalities = [], vaccinati
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm col-span-1 hover:border-gray-200 transition-colors">
-        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Animal Distribution</h3>
+      <div className="bg-[#FFFFFC] p-6 rounded-lg border border-[#E3E4D6] shadow-sm col-span-1 hover:border-[#2E3A1C]/25 transition-colors">
+        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Animal Distribution</h3>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             {distributionData.length > 0 ? (
@@ -106,39 +106,39 @@ export function OverviewAnalytics({ categories = [], mortalities = [], vaccinati
         </div>
         <div className="flex flex-wrap gap-3 justify-center mt-2">
           {distributionData.map((d, i) => (
-            <div key={d.name} className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
-              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-              {d.name} ({d.value})
+            <div key={d.name} className="flex items-center gap-1.5 text-xs font-semibold text-gray-400">
+              <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+              <span className="text-[#2E3A1C] font-bold">{d.name}</span> ({d.value})
             </div>
           ))}
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm col-span-1 hover:border-gray-200 transition-colors">
-        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Mortality Trend (7 Days)</h3>
+      <div className="bg-[#FFFFFC] p-6 rounded-lg border border-[#E3E4D6] shadow-sm col-span-1 hover:border-[#2E3A1C]/25 transition-colors">
+        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Mortality Trend (7 Days)</h3>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={mortalityData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-              <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#9CA3AF', fontSize: 12}} />
-              <YAxis axisLine={false} tickLine={false} tick={{fill: '#9CA3AF', fontSize: 12}} allowDecimals={false} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E3E4D6" />
+              <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: 'rgba(46, 58, 28, 0.5)', fontSize: 11, fontWeight: 'bold'}} />
+              <YAxis axisLine={false} tickLine={false} tick={{fill: 'rgba(46, 58, 28, 0.5)', fontSize: 11, fontWeight: 'bold'}} allowDecimals={false} />
               <Tooltip />
-              <Line type="monotone" dataKey="deaths" stroke="#ef4444" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+              <Line type="monotone" dataKey="deaths" stroke="#2E3A1C" strokeWidth={2.5} dot={{ r: 3.5, strokeWidth: 1.5, fill: '#D7F200' }} activeDot={{ r: 5 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm col-span-1 hover:border-gray-200 transition-colors">
-        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Vaccinations (Next 7 Days)</h3>
+      <div className="bg-[#FFFFFC] p-6 rounded-lg border border-[#E3E4D6] shadow-sm col-span-1 hover:border-[#2E3A1C]/25 transition-colors">
+        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Vaccinations (Next 7 Days)</h3>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={vaccinationData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-              <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#9CA3AF', fontSize: 12}} />
-              <YAxis axisLine={false} tickLine={false} tick={{fill: '#9CA3AF', fontSize: 12}} allowDecimals={false} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E3E4D6" />
+              <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: 'rgba(46, 58, 28, 0.5)', fontSize: 11, fontWeight: 'bold'}} />
+              <YAxis axisLine={false} tickLine={false} tick={{fill: 'rgba(46, 58, 28, 0.5)', fontSize: 11, fontWeight: 'bold'}} allowDecimals={false} />
               <Tooltip />
-              <Bar dataKey="pending" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="pending" fill="#2E3A1C" radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

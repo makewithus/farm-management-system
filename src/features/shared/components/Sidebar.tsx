@@ -2,14 +2,20 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { LayoutDashboard, Users, Grid, Settings, LineChart, FileText, ShoppingCart, Activity, Zap, Droplets, BookOpen, Sprout, Layers, Plus, UserCog, Package, TrendingUp, ShieldCheck } from 'lucide-react';
 
 export function Sidebar({ isCollapsed = false, userRole = "Worker" }: { isCollapsed?: boolean; userRole?: string }) {
   const pathname = usePathname();
+  const { data: session } = useSession();
 
-  const isOwner = userRole === "Owner";
-  const isManager = userRole === "Manager" || isOwner;
-  const isAccountant = userRole === "Accountant" || isOwner;
+  const userName = session?.user?.name || "System Admin";
+  const role = session?.user?.role || userRole;
+  const initial = userName.charAt(0).toUpperCase();
+
+  const isOwner = role === "Owner";
+  const isManager = role === "Manager" || isOwner;
+  const isAccountant = role === "Accountant" || isOwner;
 
   const menuGroups = [
     {
@@ -147,13 +153,15 @@ export function Sidebar({ isCollapsed = false, userRole = "Worker" }: { isCollap
         })}
       </nav>
       
-      {/* Premium user avatar at the bottom */}
+      {/* Clean Dynamic User Footer */}
       {!isCollapsed && (
-        <div className="p-3 border-t border-[#E3E4D6] flex items-center gap-3 bg-[#2E3A1C]/5 hover:bg-[#2E3A1C]/10 transition-colors">
-          <div className="w-8 h-8 rounded-full bg-cover bg-center border border-[#E3E4D6] shadow-sm shrink-0" style={{ backgroundImage: "url('/farmer-avatar.png')" }} />
+        <div className="p-3 border-t border-[#E3E4D6] flex items-center gap-2.5 bg-[#F9FAF6] shrink-0">
+          <div className="w-7 h-7 rounded-lg bg-[#2E3A1C] flex items-center justify-center text-[#D7F200] font-extrabold text-xs shadow-sm shrink-0">
+            {initial}
+          </div>
           <div className="overflow-hidden">
-            <p className="text-xs font-black text-[#2E3A1C] truncate">Jackson Webb</p>
-            <p className="text-[9px] text-gray-500 font-bold uppercase tracking-wider truncate">{userRole}</p>
+            <p className="text-xs font-extrabold text-[#2E3A1C] truncate leading-tight">{userName}</p>
+            <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider truncate mt-0.5">{role}</p>
           </div>
         </div>
       )}

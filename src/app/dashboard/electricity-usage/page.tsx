@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { ElectricityUsageTable } from "@/features/electricity/components/ElectricityUsageTable";
 import { ElectricityUsageForm } from "@/features/electricity/components/ElectricityUsageForm";
+import { BrandLoader } from "@/features/shared/components/BrandLoader";
 import { toast } from "sonner";
 import { useRBAC } from "@/lib/rbac-client";
 
@@ -63,7 +64,7 @@ export default function ElectricityUsagePage() {
 
       {!isCreating && !editingUsage && (
         isLoading ? (
-          <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div></div>
+          <BrandLoader label="Loading electricity usage records..." />
         ) : (
           <ElectricityUsageTable data={usages} onEdit={setEditingUsage} onRefresh={fetchUsages} canMutate={canMutate} />
         )

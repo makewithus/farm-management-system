@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { UtilityMeterTable } from "@/features/electricity/components/UtilityMeterTable";
 import { UtilityMeterForm } from "@/features/electricity/components/UtilityMeterForm";
+import { BrandLoader } from "@/features/shared/components/BrandLoader";
 import { toast } from "sonner";
 import { useRBAC } from "@/lib/rbac-client";
 
@@ -74,7 +75,7 @@ export default function UtilityMetersPage() {
 
       {!isCreating && !editingMeter && (
         isLoading ? (
-          <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div></div>
+          <BrandLoader label="Loading utility meters..." />
         ) : (
           <UtilityMeterTable data={meters} onEdit={setEditingMeter} onRefresh={fetchMeters} canMutate={canMutate} />
         )

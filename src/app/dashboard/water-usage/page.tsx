@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { WaterUsageTable } from "@/features/water/components/WaterUsageTable";
 import { WaterUsageForm } from "@/features/water/components/WaterUsageForm";
+import { BrandLoader } from "@/features/shared/components/BrandLoader";
 import { toast } from "sonner";
 import { useRBAC } from "@/lib/rbac-client";
 
@@ -63,7 +64,7 @@ export default function WaterUsagePage() {
 
       {!isCreating && !editingUsage && (
         isLoading ? (
-          <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div></div>
+          <BrandLoader label="Loading water usage records..." />
         ) : (
           <WaterUsageTable data={usages} onEdit={setEditingUsage} onRefresh={fetchUsages} canMutate={canMutate} />
         )

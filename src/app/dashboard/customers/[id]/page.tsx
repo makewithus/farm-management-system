@@ -8,6 +8,7 @@ import { PaymentTable } from "@/features/receivables/components/PaymentTable";
 import { toast } from "sonner";
 import { useRBAC } from "@/lib/rbac-client";
 import { format } from "date-fns";
+import { BrandLoader } from "@/features/shared/components/BrandLoader";
 
 import { customerPaymentRepository } from "@/lib/offline/repositories/customerPaymentRepository";
 import { salesRepository } from "@/lib/offline/repositories/salesRepository";
@@ -95,7 +96,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
     fetchLedger();
   }, [id, isRecording]);
 
-  if (isLoading) return <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div></div>;
+  if (isLoading) return <BrandLoader label="Loading customer ledger..." />;
   if (!data) return <div className="p-6">Customer not found.</div>;
 
   const { customer, metrics } = data;

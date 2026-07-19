@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { BrandLoader } from "@/features/shared/components/BrandLoader";
 
 const ROLE_COLORS: Record<string, string> = {
   Owner: "bg-purple-100 text-purple-700",
@@ -170,7 +171,7 @@ export default function UserManagementPage() {
 
       <div className="bg-card-bg border border-border-main rounded-[var(--radius-card)] shadow-soft overflow-hidden">
         {isLoading ? (
-          <div className="flex justify-center items-center h-32"><Loader2 className="animate-spin w-6 h-6 text-gray-400" /></div>
+          <BrandLoader label="Loading user accounts..." />
         ) : (
           <table className="min-w-full divide-y divide-border-divider">
             <thead className="bg-page-bg">

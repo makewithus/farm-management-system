@@ -81,15 +81,15 @@ export default function ElectricityPage() {
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-8">
       {/* HEADER & FILTERS */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#FFFFFC] p-5 rounded-lg border border-[#E3E4D6] shadow-sm">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Electricity Usage Report</h1>
+          <h1 className="text-2xl font-extrabold text-[#2E3A1C] tracking-tight">Electricity Usage Report</h1>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-brand-primary/20 outline-none"
+            className="px-4 py-2 border border-[#E3E4D6] rounded-md text-sm font-bold focus:ring-2 focus:ring-[#2E3A1C]/20 outline-none cursor-pointer"
           >
             <option value="today">Today</option>
             <option value="week">This Week</option>
@@ -100,60 +100,60 @@ export default function ElectricityPage() {
           
           {period === "custom" && (
             <div className="flex items-center gap-2">
-              <input type="date" value={customStart} onChange={e => setCustomStart(e.target.value)} className="px-3 py-2 border rounded-lg text-sm" />
+              <input type="date" value={customStart} onChange={e => setCustomStart(e.target.value)} className="px-3 py-2 border rounded-md text-sm" />
               <span className="text-gray-400">-</span>
-              <input type="date" value={customEnd} onChange={e => setCustomEnd(e.target.value)} className="px-3 py-2 border rounded-lg text-sm" />
+              <input type="date" value={customEnd} onChange={e => setCustomEnd(e.target.value)} className="px-3 py-2 border rounded-md text-sm" />
             </div>
           )}
-
-          <div className="flex items-center gap-2 border-l pl-3 ml-2 border-gray-200">
-            <button onClick={() => handleExport('excel')} className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200 rounded-lg text-sm font-medium transition-colors">
-              <Download className="w-4 h-4" /> Excel
+ 
+          <div className="flex items-center gap-2 border-l pl-3 ml-2 border-[#E3E4D6]">
+            <button onClick={() => handleExport('excel')} className="flex items-center gap-2 px-3 py-2 bg-[#FFFFFC] hover:bg-emerald-50 text-emerald-800 border border-[#E3E4D6] rounded-md text-xs font-bold transition-colors cursor-pointer">
+              <Download className="w-4 h-4 text-emerald-600" /> Excel
             </button>
-            <button onClick={() => handleExport('pdf')} className="flex items-center gap-2 px-3 py-2 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 rounded-lg text-sm font-medium transition-colors">
-              <Download className="w-4 h-4" /> PDF
+            <button onClick={() => handleExport('pdf')} className="flex items-center gap-2 px-3 py-2 bg-[#FFFFFC] hover:bg-red-50 text-red-800 border border-[#E3E4D6] rounded-md text-xs font-bold transition-colors cursor-pointer">
+              <Download className="w-4 h-4 text-red-600" /> PDF
             </button>
           </div>
         </div>
       </div>
-
+ 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
-          <p className="text-sm font-medium text-gray-500">Total Consumed</p>
-          <h4 className="text-2xl font-bold text-yellow-600">{data?.kpis?.totalConsumption || 0} kWh</h4>
+        <div className="bg-[#FFFFFC] p-5 rounded-lg border border-[#E3E4D6] shadow-sm">
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Consumed</p>
+          <h4 className="text-2xl font-extrabold text-[#2E3A1C]">{data?.kpis?.totalConsumption || 0} kWh</h4>
         </div>
-        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
-          <p className="text-sm font-medium text-gray-500">Total Cost</p>
-          <h4 className="text-2xl font-bold text-red-600">₹{data?.kpis?.totalCost?.toFixed(2) || 0}</h4>
+        <div className="bg-[#FFFFFC] p-5 rounded-lg border border-[#E3E4D6] shadow-sm">
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Cost</p>
+          <h4 className="text-2xl font-extrabold text-status-danger">₹{data?.kpis?.totalCost?.toFixed(2) || 0}</h4>
         </div>
-        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
-          <p className="text-sm font-medium text-gray-500">Elec Per Animal</p>
-          <h4 className="text-2xl font-bold text-emerald-600">{data?.kpis?.elecPerAnimal?.toFixed(2) || 0} kWh/A</h4>
+        <div className="bg-[#FFFFFC] p-5 rounded-lg border border-[#E3E4D6] shadow-sm">
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Elec Per Animal</p>
+          <h4 className="text-2xl font-extrabold text-[#2E3A1C]">{data?.kpis?.elecPerAnimal?.toFixed(2) || 0} kWh/A</h4>
         </div>
       </div>
-
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+ 
+      <div className="bg-[#FFFFFC] rounded-lg border border-[#E3E4D6] shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-600">
-            <thead className="bg-gray-50 text-gray-800 border-b border-gray-100">
-              <tr>
-                <th className="px-6 py-4 font-semibold">Date</th>
-                <th className="px-6 py-4 font-semibold">Meter</th>
-                <th className="px-6 py-4 font-semibold">Units (kWh)</th>
-                <th className="px-6 py-4 font-semibold">Cost (₹)</th>
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-[#E3E4D6] text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                <th className="pb-3 pl-1">Date</th>
+                <th className="pb-3">Meter</th>
+                <th className="pb-3 text-right">Units (kWh)</th>
+                <th className="pb-3 text-right pr-1">Cost (₹)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-[#E3E4D6]/40">
               {data?.rows?.length > 0 ? data.rows.map((row: any, i: number) => (
-                <tr key={i} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-4 font-medium">{row.date}</td>
-                  <td className="px-6 py-4">{row.meter}</td>
-                  <td className="px-6 py-4 text-yellow-600">{row.consumption} kWh</td>
-                  <td className="px-6 py-4 text-red-500">₹{row.cost?.toFixed(2)}</td>
+                <tr key={i} className="hover:bg-[#2E3A1C]/5 transition-colors">
+                  <td className="py-4 pl-1 font-bold">{row.date}</td>
+                  <td className="py-4 font-semibold text-xs text-gray-500">{row.meter}</td>
+                  <td className="py-4 text-right font-extrabold text-[#2E3A1C]">{row.consumption} kWh</td>
+                  <td className="py-4 text-right font-extrabold text-status-danger pr-1">₹{row.cost?.toFixed(2)}</td>
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan={10} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={10} className="py-8 text-center text-gray-500">
                     <EmptyState title="No Data Found" description="No records match the selected filters." />
                   </td>
                 </tr>

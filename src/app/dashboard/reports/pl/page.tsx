@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { DollarSign, TrendingUp, AlertCircle, Calendar } from "lucide-react";
+import { DollarSign, TrendingUp, AlertCircle, Calendar, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -28,7 +28,16 @@ export default function ProfitAndLossPage() {
     fetchPL();
   }, [period]);
 
-  if (isLoading) return <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div></div>;
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3">
+        <div className="w-12 h-12 rounded-2xl bg-[#FFFFFC] border border-[#E3E4D6] flex items-center justify-center shadow-sm">
+          <Loader2 className="w-6 h-6 text-[#2E3A1C] animate-spin" />
+        </div>
+        <p className="text-xs font-bold text-[#2E3A1C]/70">Loading P&L data...</p>
+      </div>
+    );
+  }
   if (!data) return <div className="p-6">Data not found.</div>;
 
   const { revenue, expenses, profit, margin } = data;

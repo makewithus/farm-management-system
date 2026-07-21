@@ -42,6 +42,10 @@
   --radius-modal: 12px;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--color-page-bg);
   color: var(--color-text-body);

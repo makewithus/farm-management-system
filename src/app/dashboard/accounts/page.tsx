@@ -70,13 +70,13 @@ export default function AccountsDashboardPage() {
   const PIE_COLORS = ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b", "#ef4444"];
 
   return (
-    <div className="space-y-6 pb-12 max-w-7xl mx-auto">
+    <div className="space-y-6 pb-12">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Accounting & Finance</h1>
           <p className="text-gray-500 text-sm mt-1">Unified view of your financial health and assets.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button onClick={() => setShowOpeningCash(true)} className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-2 shadow-sm">
             <Wallet className="w-4 h-4" /> Set Opening Cash
           </button>
@@ -89,7 +89,7 @@ export default function AccountsDashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Row 1 */}
         <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
@@ -159,7 +159,7 @@ export default function AccountsDashboardPage() {
           <h2 className="text-lg font-bold text-gray-900 mb-4">Revenue Trend (6 Months)</h2>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={revenueTrend} margin={{ top: 10, right: 10, left: 5, bottom: 5 }}>
                 <defs>
                   <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>

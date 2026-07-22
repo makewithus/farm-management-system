@@ -5,8 +5,10 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 export function OverviewAnalytics({ categories = [], mortalities = [], vaccinations = [] }: { categories?: any[], mortalities?: any[], vaccinations?: any[] }) {
   const [offlineMortalities, setOfflineMortalities] = useState<any[]>([]);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     import("@/lib/offline/repositories/mortalityRepository").then(mod => {
       mod.mortalityRepository.getAll().then(all => {
         setOfflineMortalities(all.filter((m: any) => m.isOffline));
@@ -76,13 +78,32 @@ export function OverviewAnalytics({ categories = [], mortalities = [], vaccinati
     }));
   }, [vaccinations]);
 
+  if (!mounted) {
+    return (
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="bg-[#FFFFFC] p-6 rounded-lg border border-[#E3E4D6] h-[368px] animate-pulse">
+          <div className="h-4 bg-gray-200 rounded w-1/3 mb-4"></div>
+          <div className="h-64 bg-gray-100 rounded"></div>
+        </div>
+        <div className="bg-[#FFFFFC] p-6 rounded-lg border border-[#E3E4D6] h-[368px] animate-pulse">
+          <div className="h-4 bg-gray-200 rounded w-1/3 mb-4"></div>
+          <div className="h-64 bg-gray-100 rounded"></div>
+        </div>
+        <div className="bg-[#FFFFFC] p-6 rounded-lg border border-[#E3E4D6] h-[368px] animate-pulse">
+          <div className="h-4 bg-gray-200 rounded w-1/3 mb-4"></div>
+          <div className="h-64 bg-gray-100 rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
       <div className="bg-[#FFFFFC] p-6 rounded-lg border border-[#E3E4D6] shadow-sm col-span-1 hover:border-[#2E3A1C]/25 transition-colors">
         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Animal Distribution</h3>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            {distributionData.length > 0 ? (
+        <div className="h-64 flex items-center justify-center">
+          {distributionData.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={distributionData}
@@ -99,10 +120,10 @@ export function OverviewAnalytics({ categories = [], mortalities = [], vaccinati
                 </Pie>
                 <Tooltip />
               </PieChart>
-            ) : (
-              <div className="flex items-center justify-center h-full text-gray-400 text-sm">No animals found</div>
-            )}
-          </ResponsiveContainer>
+            </ResponsiveContainer>
+          ) : (
+            <div className="text-gray-400 text-sm font-semibold">No animals found</div>
+          )}
         </div>
         <div className="flex flex-wrap gap-3 justify-center mt-2">
           {distributionData.map((d, i) => (
@@ -118,7 +139,7 @@ export function OverviewAnalytics({ categories = [], mortalities = [], vaccinati
         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Mortality Trend (7 Days)</h3>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={mortalityData}>
+            <LineChart data={mortalityData} margin={{ top: 15, right: 15, left: -15, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E3E4D6" />
               <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: 'rgba(46, 58, 28, 0.5)', fontSize: 11, fontWeight: 'bold'}} />
               <YAxis axisLine={false} tickLine={false} tick={{fill: 'rgba(46, 58, 28, 0.5)', fontSize: 11, fontWeight: 'bold'}} allowDecimals={false} />
@@ -133,7 +154,7 @@ export function OverviewAnalytics({ categories = [], mortalities = [], vaccinati
         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Vaccinations (Next 7 Days)</h3>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={vaccinationData}>
+            <BarChart data={vaccinationData} margin={{ top: 15, right: 15, left: -15, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E3E4D6" />
               <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: 'rgba(46, 58, 28, 0.5)', fontSize: 11, fontWeight: 'bold'}} />
               <YAxis axisLine={false} tickLine={false} tick={{fill: 'rgba(46, 58, 28, 0.5)', fontSize: 11, fontWeight: 'bold'}} allowDecimals={false} />

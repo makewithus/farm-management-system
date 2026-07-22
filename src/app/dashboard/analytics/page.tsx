@@ -186,14 +186,14 @@ export default function AnalyticsDashboard() {
   const { kpis = {}, charts = {}, slaughterMetrics = {} } = data || {};
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto space-y-8">
+    <div className="space-y-6 pb-12">
       {/* HEADER & FILTERS */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Analytics Dashboard</h1>
           <p className="text-sm text-gray-500">Comprehensive farm performance metrics</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
@@ -217,7 +217,7 @@ export default function AnalyticsDashboard() {
       </div>
 
       {/* KPI SECTION */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard title="Revenue" value={`₹${(kpis.revenue + offlineSalesRevenue)?.toLocaleString() || 0}`} icon={DollarSign} colorClass="bg-emerald-100 text-emerald-600" />
         <KPICard title="Expenses" value={`₹${(kpis.expenses + offlineFeedCost + offlineWaterCost + offlineElecCost + offlineExpense)?.toLocaleString() || 0}`} icon={TrendingUp} colorClass="bg-red-100 text-red-600" />
         <KPICard title="Net Profit" value={`₹${(kpis.netProfit + offlineSalesRevenue - offlineFeedCost - offlineWaterCost - offlineElecCost - offlineExpense)?.toLocaleString() || 0}`} icon={Activity} colorClass="bg-blue-100 text-blue-600" />
@@ -237,7 +237,7 @@ export default function AnalyticsDashboard() {
         <ChartCard title="Revenue vs Expense Trend">
           {charts.financialTrend?.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={charts.financialTrend}>
+              <LineChart data={charts.financialTrend} margin={{ top: 10, right: 15, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis dataKey="date" tick={{fontSize: 12}} tickLine={false} axisLine={false} />
                 <YAxis tick={{fontSize: 12}} tickLine={false} axisLine={false} tickFormatter={v => `₹${v}`} />
@@ -271,7 +271,7 @@ export default function AnalyticsDashboard() {
         <ChartCard title="Mortality Trend">
           {charts.mortalityTrend?.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={charts.mortalityTrend}>
+              <BarChart data={charts.mortalityTrend} margin={{ top: 10, right: 15, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="date" tick={{fontSize: 12}} />
                 <YAxis tick={{fontSize: 12}} />
@@ -302,7 +302,7 @@ export default function AnalyticsDashboard() {
         <ChartCard title="Feed Consumption Trend">
           {charts.feedTrend?.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={charts.feedTrend}>
+              <LineChart data={charts.feedTrend} margin={{ top: 10, right: 15, left: 10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="date" tick={{fontSize: 12}} />
                 <YAxis yAxisId="left" tick={{fontSize: 12}} />
@@ -319,7 +319,7 @@ export default function AnalyticsDashboard() {
         <ChartCard title="Room Occupancy & Utilization">
           {charts.roomOccupancy?.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={charts.roomOccupancy}>
+              <BarChart data={charts.roomOccupancy} margin={{ top: 10, right: 15, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="room" tick={{fontSize: 12}} />
                 <YAxis tick={{fontSize: 12}} />
@@ -338,7 +338,7 @@ export default function AnalyticsDashboard() {
         <ChartCard title="Slaughter Processing Trend">
           {charts.slaughterTrend?.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={charts.slaughterTrend}>
+              <LineChart data={charts.slaughterTrend} margin={{ top: 10, right: 15, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="date" tick={{fontSize: 12}} />
                 <YAxis tick={{fontSize: 12}} />
@@ -372,7 +372,7 @@ export default function AnalyticsDashboard() {
         <ChartCard title="Water Consumption & Cost Trend">
           {charts.waterTrend?.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={charts.waterTrend}>
+              <LineChart data={charts.waterTrend} margin={{ top: 10, right: 15, left: 10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="date" tick={{fontSize: 12}} />
                 <YAxis yAxisId="left" tick={{fontSize: 12}} />
@@ -389,7 +389,7 @@ export default function AnalyticsDashboard() {
         <ChartCard title="Electricity Consumption & Cost Trend">
           {charts.elecTrend?.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={charts.elecTrend}>
+              <LineChart data={charts.elecTrend} margin={{ top: 10, right: 15, left: 10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="date" tick={{fontSize: 12}} />
                 <YAxis yAxisId="left" tick={{fontSize: 12}} />
@@ -409,7 +409,7 @@ export default function AnalyticsDashboard() {
         <ChartCard title="Animal Growth Trend">
           {charts.animalGrowthTrend?.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={charts.animalGrowthTrend}>
+              <LineChart data={charts.animalGrowthTrend} margin={{ top: 10, right: 15, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="date" tick={{fontSize: 12}} />
                 <YAxis tick={{fontSize: 12}} />
@@ -423,7 +423,7 @@ export default function AnalyticsDashboard() {
         <ChartCard title="Revenue Growth Trend">
           {charts.revenueGrowthTrend?.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={charts.revenueGrowthTrend}>
+              <LineChart data={charts.revenueGrowthTrend} margin={{ top: 10, right: 15, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="date" tick={{fontSize: 12}} />
                 <YAxis tick={{fontSize: 12}} tickFormatter={v => `₹${v}`} />
@@ -437,7 +437,7 @@ export default function AnalyticsDashboard() {
         <ChartCard title="Inventory Value Growth Trend">
           {charts.inventoryGrowthTrend?.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={charts.inventoryGrowthTrend}>
+              <LineChart data={charts.inventoryGrowthTrend} margin={{ top: 10, right: 15, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="date" tick={{fontSize: 12}} />
                 <YAxis tick={{fontSize: 12}} tickFormatter={v => `₹${v}`} />
